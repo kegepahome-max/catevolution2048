@@ -5,6 +5,8 @@
 
 // Game variables
 
+alert("✅ JavaScript file loaded successfully!");
+
 let board = [];
 let score = 0;
 let best = Number(localStorage.getItem("catevol")) || 0;
