@@ -467,13 +467,14 @@ document.addEventListener("keydown", function(event) {
         ArrowDown: "down"
     };
 
-    // Prevent the page from scrolling
-    if (directions[event.key]) {
+    if (event.key in directions) {
+
         event.preventDefault();
+
         move(directions[event.key]);
     }
 
-});
+}, { passive: false });
 
 
 // =====================================
