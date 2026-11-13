@@ -24,21 +24,59 @@ let animationPositions = [];
 // Cat evolution progression
 
 const cats = {
-    2:    { name: "Kitten", emoji: "🐱" },
-    4:    { name: "House Cat", emoji: "🐈" },
-    8:    { name: "Happy Cat", emoji: "😺" },
-    16:   { name: "Black Cat", emoji: "🐈‍⬛" },
-    32:   { name: "Wildcat", emoji: "🐾" },
-    64:   { name: "Serval", emoji: "🐆" },
-    128:  { name: "Cheetah", emoji: "🐆" },
-    256:  { name: "Leopard", emoji: "🐆" },
-    512:  { name: "Jaguar", emoji: "🐅" },
-    1024: { name: "Tiger", emoji: "🐯" },
-    2048: { name: "Lion", emoji: "🦁" },
-    4096: { name: "White Lion", emoji: "🦁" },
-    8192: { name: "Ultimate Feline", emoji: "👑" }
+    2: {
+        name: "Kitten",
+        image: "images/kitten.png"
+    },
+    4: {
+        name: "House Cat",
+        image: "images/house-cat.png"
+    },
+    8: {
+        name: "Happy Cat",
+        image: "images/happy-cat.png"
+    },
+    16: {
+        name: "Black Cat",
+        image: "images/black-cat.png"
+    },
+    32: {
+        name: "Wildcat",
+        image: "images/wildcat.png"
+    },
+    64: {
+        name: "Serval",
+        image: "images/serval.png"
+    },
+    128: {
+        name: "Cheetah",
+        image: "images/cheetah.png"
+    },
+    256: {
+        name: "Leopard",
+        image: "images/leopard.png"
+    },
+    512: {
+        name: "Jaguar",
+        image: "images/jaguar.png"
+    },
+    1024: {
+        name: "Tiger",
+        image: "images/tiger.png"
+    },
+    2048: {
+        name: "Lion",
+        image: "images/lion.png"
+    },
+    4096: {
+        name: "White Lion",
+        image: "images/white-lion.png"
+    },
+    8192: {
+        name: "Ultimate Feline",
+        image: "images/ultimate-feline.png"
+    }
 };
-
 // Find game elements
 
 const boardElement = document.getElementById("board");
@@ -152,9 +190,9 @@ function updateBoard() {
                 }
 
                 tile.innerHTML = `
-                    <span class="animal">${cat.emoji}</span>
-                    <small class="value">${value}</small>
-                `;
+    <img src="${cat.image}" class="cat-image">
+    <small class="value">${value}</small>
+`;
 
                 tile.title = cat.name;
             }
@@ -194,17 +232,19 @@ function updateCatCollection() {
             ? "cat-item locked"
             : "cat-item";
 
-        item.innerHTML = `
-            <span class="animal">
-                ${number <= highest ? cat.emoji : "❔"}
-            </span>
+       item.innerHTML = `
+    ${
+        number <= highest
+        ? `<img src="${cat.image}" class="cat-image">`
+        : `<span class="animal">❔</span>`
+    }
 
-            <strong>${number}</strong>
+    <strong>${number}</strong>
 
-            <div>
-                ${number <= highest ? cat.name : "Locked"}
-            </div>
-        `;
+    <div>
+        ${number <= highest ? cat.name : "Locked"}
+    </div>
+`;
 
         list.appendChild(item);
     }
