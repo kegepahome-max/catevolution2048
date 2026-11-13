@@ -451,6 +451,7 @@ function checkGameOver() {
 
     messageElement.textContent =
         "Game over! Start a new game to try again.";
+    alert("Game over!");
 }
 
 // =====================================
