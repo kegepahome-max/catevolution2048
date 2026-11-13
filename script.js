@@ -177,24 +177,28 @@ function updateBoard() {
                         position.to.c === c
                 );
 
-                if (movement) {
+               if (movement) {
 
-                    const cellSize =
-                        boardElement.clientWidth / SIZE;
+    const cellSize =
+        boardElement.clientWidth / SIZE;
 
-                    const dx =
-                        (movement.from.c - movement.to.c) *
-                        cellSize;
+    const dx =
+        (movement.from.c - movement.to.c) *
+        cellSize;
 
-                    const dy =
-                        (movement.from.r - movement.to.r) *
-                        cellSize;
+    const dy =
+        (movement.from.r - movement.to.r) *
+        cellSize;
 
-                    tile.style.setProperty("--dx", dx + "px");
-                    tile.style.setProperty("--dy", dy + "px");
+    tile.style.setProperty("--dx", dx + "px");
+    tile.style.setProperty("--dy", dy + "px");
 
-                    tile.classList.add("moving");
-                }
+    if (movement.fromPositions.length > 1) {
+        tile.classList.add("merging");
+    } else {
+        tile.classList.add("moving");
+    }
+}
 
                 // Add cat image and tile value
                 tile.innerHTML = `
