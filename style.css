@@ -1,201 +1,231 @@
 
 /* =================================
    CAT EVOLUTION 2048
-   Clean White Premium Theme
+   Complete CSS
 ================================= */
 
+/* General styling */
+
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #f8f9fb;
-    color: #242832;
-    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff5f7;
+    color: #59434b;
     text-align: center;
 }
 
-/* HEADER */
+/* Header */
 
 header {
-    padding: 35px 20px 25px;
-    background: #ffffff;
-    border-bottom: 1px solid #eeeeee;
+    padding: 25px;
 }
 
 header h1 {
-    font-size: 36px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: #222630;
+    font-size: 38px;
+    margin-bottom: 5px;
 }
 
 header p {
+    color: #947780;
     margin-top: 8px;
-    color: #777d89;
-    font-size: 15px;
 }
 
-/* MAIN GAME */
+/* Game container */
 
 .game-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 30px auto;
-    padding: 0 18px;
+    width: 420px;
+    max-width: 95%;
+    margin: 0 auto;
+    padding-bottom: 30px;
 }
 
-/* SCORE */
+/* Game information */
 
 .game-info {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 15px;
-    margin-bottom: 22px;
+    margin: 20px 0;
+    flex-wrap: wrap;
 }
+
+/* Score boxes */
 
 .score-box {
-    flex: 1;
-    max-width: 160px;
-    background: #ffffff;
-    border: 1px solid #e8eaf0;
-    border-radius: 14px;
-    padding: 13px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
-}
-
-.score-box span {
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888e99;
-    font-weight: 700;
+    background: #e9b8c7;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 10px;
+    min-width: 110px;
+    box-shadow: 0 3px 6px rgba(120, 65, 85, 0.12);
 }
 
 .score-box h2 {
-    margin-top: 5px;
-    font-size: 27px;
-    color: #252a35;
+    margin: 5px;
 }
 
-/* NEW GAME BUTTON */
+.score-box span {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Buttons */
 
 button {
-    background: #252a35;
+    background: #d97899;
     color: white;
     border: none;
-    border-radius: 10px;
-    padding: 12px 28px;
-    font-size: 14px;
-    font-weight: 700;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.2s ease;
-    margin-bottom: 22px;
+    margin-bottom: 10px;
+    transition:
+        background 0.2s,
+        transform 0.15s;
 }
 
 button:hover {
-    background: #414958;
+    background: #bd5d7e;
     transform: translateY(-2px);
 }
 
 button:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
 
-/* GAME BOARD */
+/* Game board */
 
 .game-board,
 .board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    width: 100%;
-    aspect-ratio: 1 / 1;
+    background: #e8cbd3;
     padding: 10px;
-    background: #e9ebf0;
-    border-radius: 18px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    width: 100%;
+    touch-action: none;
 }
 
-/* TILES */
+/* Individual tiles */
 
 .tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-    min-height: 0;
-    border-radius: 12px;
-    background: #ffffff;
+    aspect-ratio: 1;
+    position: relative;
     overflow: hidden;
-    transition: background 0.2s ease;
+
+    background: #f5e1e7;
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    font-size: 28px;
+    font-weight: bold;
+
+    will-change: transform;
 }
 
-.tile.empty {
-    background: #f5f6f8;
-}
-
-/* CAT ICONS */
+/* Cat emoji */
 
 .tile .animal {
-    font-size: clamp(25px, 7vw, 43px);
+    font-size: clamp(25px, 8vw, 42px);
     line-height: 1.2;
+    display: block;
 }
 
-.tile img {
-    width: 82%;
-    height: 75%;
-    object-fit: contain;
-}
+/* Tile number */
 
 .tile .value {
-    font-size: 13px;
-    font-weight: 800;
-    color: #343946;
+    font-size: 12px;
     margin-top: 3px;
+    color: #59434b;
 }
 
-/* EVOLUTION TILE COLORS */
+/* Empty tiles */
 
-.tile-2,
-.tile-4,
+.tile.empty {
+    background: #f5e1e7;
+}
+
+/* =================================
+   TILE COLOURS
+================================= */
+
+.tile-2 {
+    background: #ffe5ed;
+}
+
+.tile-4 {
+    background: #fbd2df;
+}
+
 .tile-8 {
-    background: #ffffff;
+    background: #f7b6cb;
 }
 
-.tile-16,
-.tile-32,
+.tile-16 {
+    background: #f49bb8;
+}
+
+.tile-32 {
+    background: #ed83a6;
+}
+
 .tile-64 {
-    background: #fff9ed;
+    background: #e66d96;
 }
 
-.tile-128,
-.tile-256,
+.tile-128 {
+    background: #d95783;
+    color: white;
+}
+
+.tile-256 {
+    background: #c94374;
+    color: white;
+}
+
 .tile-512 {
-    background: #fff2df;
+    background: #b72e65;
+    color: white;
 }
 
-.tile-1024,
+.tile-1024 {
+    background: #a5235c;
+    color: white;
+}
+
 .tile-2048 {
-    background: #fff0c9;
+    background: #e7b84b;
+    color: white;
 }
 
 .tile-4096 {
-    background: #edf4ff;
+    background: #b8a2dc;
+    color: white;
 }
 
 .tile-8192 {
-    background: #fff1c2;
-    border: 2px solid #e7b83e;
-    box-shadow: 0 0 12px rgba(231, 184, 62, 0.25);
+    background: #8064b8;
+    color: white;
 }
 
-/* MOVEMENT ANIMATION */
+/* =================================
+   MOVEMENT ANIMATIONS
+================================= */
+
+/* Smoothly move multiple cats */
 
 .tile.moving {
     animation: catMove 180ms ease-out;
@@ -203,10 +233,7 @@ button:active {
 
 @keyframes catMove {
     from {
-        transform: translate(
-            var(--dx, 0),
-            var(--dy, 0)
-        );
+        transform: translate(var(--dx), var(--dy));
     }
 
     to {
@@ -214,138 +241,134 @@ button:active {
     }
 }
 
-/* INSTRUCTIONS */
+/* Cat appearance animation */
 
-.instructions {
-    margin-top: 30px;
-    padding: 20px;
-    background: #ffffff;
-    border: 1px solid #e8eaf0;
-    border-radius: 14px;
-    text-align: left;
+.tile:not(.empty) .animal {
+    animation: catPop 180ms ease-out;
 }
 
-.instructions h3 {
-    font-size: 17px;
-    margin-bottom: 12px;
-    color: #252a35;
+@keyframes catPop {
+    0% {
+        transform: scale(0.65);
+    }
+
+    70% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
-.instructions p {
-    color: #777d89;
-    font-size: 14px;
-    margin: 7px 0;
+/* =================================
+   EVOLUTION COLLECTION
+================================= */
+
+.evolution {
+    background: white;
+    padding: 18px;
+    margin-top: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(120, 65, 85, 0.08);
 }
 
-/* CAT COLLECTION */
+.evolution h2 {
+    font-size: 20px;
+    margin-top: 5px;
+}
 
 #cat-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.evolution {
-    margin-top: 35px;
-}
-
-.evolution h2 {
-    font-size: 23px;
-    margin-bottom: 8px;
+    gap: 10px;
 }
 
 .cat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 15px 8px;
-    min-width: 0;
-    background: #ffffff;
-    border: 1px solid #e8eaf0;
-    border-radius: 14px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-    transition: 0.2s ease;
+    background: #fff0f5;
+    padding: 10px 3px;
+    border-radius: 9px;
+    font-size: 12px;
+    transition: transform 0.2s;
 }
 
 .cat-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+    transform: scale(1.04);
 }
 
-.cat-item span {
-    font-size: 30px;
-}
-
-.cat-item strong {
-    font-size: 14px;
-    color: #303644;
-}
-
-.cat-item small {
-    font-size: 12px;
-    color: #999eaa;
+.cat-item .animal {
+    display: block;
+    font-size: 27px;
+    margin-bottom: 5px;
 }
 
 .cat-item.locked {
-    background: #f1f2f5;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 
-/* MESSAGE */
+/* =================================
+   INSTRUCTIONS
+================================= */
 
-#message {
-    margin: 15px 0;
-    color: #9b741e;
-    font-weight: 600;
+.instructions {
+    margin: 25px 0;
+    line-height: 1.6;
+    color: #947780;
     font-size: 14px;
 }
 
-/* FOOTER */
+/* Footer */
 
 footer {
-    padding: 25px 15px;
-    color: #a0a4ad;
-    font-size: 12px;
+    padding: 20px;
+    color: #a38c93;
 }
 
-/* MOBILE */
+/* =================================
+   MOBILE RESPONSIVENESS
+================================= */
 
-@media (max-width: 450px) {
+@media (max-width: 400px) {
+
     header h1 {
-        font-size: 29px;
+        font-size: 30px;
     }
 
     .game-container {
-        margin: 20px auto;
+        max-width: 98%;
     }
 
     .game-board,
     .board {
-        gap: 7px;
+        gap: 6px;
         padding: 7px;
     }
 
     .tile {
-        border-radius: 9px;
+        font-size: 23px;
     }
 
-    .tile .animal {
-        font-size: 27px;
-    }
-
-    .tile .value {
-        font-size: 11px;
-    }
-
-    #cat-list {
-        grid-template-columns: repeat(3, 1fr);
+    .game-info {
         gap: 8px;
     }
 
-    .cat-item {
-        padding: 12px 5px;
+    .score-box {
+        padding: 9px 17px;
+        min-width: 95px;
+    }
+
+    #cat-list {
+        gap: 6px;
+    }
+}
+
+/* Respect reduced-motion settings */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
     }
 }
