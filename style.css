@@ -238,7 +238,9 @@ button:active {
 /* Smoothly move multiple cats */
 
 .tile.moving {
-    animation: none;
+    animation: catMove 500ms ease-in-out;
+    z-index: 2;
+    will-change: transform;
 }
 
 @keyframes catMove {
