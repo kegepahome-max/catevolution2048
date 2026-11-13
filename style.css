@@ -1,231 +1,202 @@
 
 /* =================================
    CAT EVOLUTION 2048
-   Complete CSS
+   Clean White Premium Theme
 ================================= */
 
-/* General styling */
-
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #fff5f7;
-    color: #59434b;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f8f9fb;
+    color: #242832;
+    min-height: 100vh;
     text-align: center;
 }
 
-/* Header */
+/* HEADER */
 
 header {
-    padding: 25px;
+    padding: 35px 20px 25px;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
 }
 
 header h1 {
-    font-size: 38px;
-    margin-bottom: 5px;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #222630;
 }
 
 header p {
-    color: #947780;
     margin-top: 8px;
+    color: #777d89;
+    font-size: 15px;
 }
 
-/* Game container */
+/* MAIN GAME */
 
 .game-container {
-    width: 420px;
-    max-width: 95%;
-    margin: 0 auto;
-    padding-bottom: 30px;
+    width: 100%;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 0 18px;
 }
 
-/* Game information */
+/* SCORE */
 
 .game-info {
     display: flex;
     justify-content: center;
-    align-items: center;
     gap: 15px;
-    margin: 20px 0;
-    flex-wrap: wrap;
+    margin-bottom: 22px;
 }
-
-/* Score boxes */
 
 .score-box {
-    background: #e9b8c7;
-    color: white;
-    padding: 10px 25px;
-    border-radius: 10px;
-    min-width: 110px;
-    box-shadow: 0 3px 6px rgba(120, 65, 85, 0.12);
-}
-
-.score-box h2 {
-    margin: 5px;
+    flex: 1;
+    max-width: 160px;
+    background: #ffffff;
+    border: 1px solid #e8eaf0;
+    border-radius: 14px;
+    padding: 13px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
 }
 
 .score-box span {
+    display: block;
     font-size: 12px;
-    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888e99;
+    font-weight: 700;
 }
 
-/* Buttons */
+.score-box h2 {
+    margin-top: 5px;
+    font-size: 27px;
+    color: #252a35;
+}
+
+/* NEW GAME BUTTON */
 
 button {
-    background: #d97899;
+    background: #252a35;
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
-    margin-bottom: 10px;
-    transition:
-        background 0.2s,
-        transform 0.15s;
+    transition: 0.2s ease;
+    margin-bottom: 22px;
 }
 
 button:hover {
-    background: #bd5d7e;
+    background: #414958;
     transform: translateY(-2px);
 }
 
 button:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
 }
 
-/* Game board */
+/* GAME BOARD */
 
 .game-board,
 .board {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    background: #e8cbd3;
-    padding: 10px;
-    border-radius: 12px;
     width: 100%;
-    touch-action: none;
+    aspect-ratio: 1 / 1;
+    padding: 10px;
+    background: #e9ebf0;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* Individual tiles */
+/* TILES */
 
 .tile {
-    aspect-ratio: 1;
     position: relative;
-    overflow: hidden;
-
-    background: #f5e1e7;
-    border-radius: 8px;
-
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-
-    font-size: 28px;
-    font-weight: bold;
-
-    will-change: transform;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 12px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: background 0.2s ease;
 }
-
-/* Cat emoji */
-
-.tile .animal {
-    font-size: clamp(25px, 8vw, 42px);
-    line-height: 1.2;
-    display: block;
-}
-
-/* Tile number */
-
-.tile .value {
-    font-size: 12px;
-    margin-top: 3px;
-    color: #59434b;
-}
-
-/* Empty tiles */
 
 .tile.empty {
-    background: #f5e1e7;
+    background: #f5f6f8;
 }
 
-/* =================================
-   TILE COLOURS
-================================= */
+/* CAT ICONS */
 
-.tile-2 {
-    background: #ffe5ed;
+.tile .animal {
+    font-size: clamp(25px, 7vw, 43px);
+    line-height: 1.2;
 }
 
-.tile-4 {
-    background: #fbd2df;
+.tile img {
+    width: 82%;
+    height: 75%;
+    object-fit: contain;
 }
 
+.tile .value {
+    font-size: 13px;
+    font-weight: 800;
+    color: #343946;
+    margin-top: 3px;
+}
+
+/* EVOLUTION TILE COLORS */
+
+.tile-2,
+.tile-4,
 .tile-8 {
-    background: #f7b6cb;
+    background: #ffffff;
 }
 
-.tile-16 {
-    background: #f49bb8;
-}
-
-.tile-32 {
-    background: #ed83a6;
-}
-
+.tile-16,
+.tile-32,
 .tile-64 {
-    background: #e66d96;
+    background: #fff9ed;
 }
 
-.tile-128 {
-    background: #d95783;
-    color: white;
-}
-
-.tile-256 {
-    background: #c94374;
-    color: white;
-}
-
+.tile-128,
+.tile-256,
 .tile-512 {
-    background: #b72e65;
-    color: white;
+    background: #fff2df;
 }
 
-.tile-1024 {
-    background: #a5235c;
-    color: white;
-}
-
+.tile-1024,
 .tile-2048 {
-    background: #e7b84b;
-    color: white;
+    background: #fff0c9;
 }
 
 .tile-4096 {
-    background: #b8a2dc;
-    color: white;
+    background: #edf4ff;
 }
 
 .tile-8192 {
-    background: #8064b8;
-    color: white;
+    background: #fff1c2;
+    border: 2px solid #e7b83e;
+    box-shadow: 0 0 12px rgba(231, 184, 62, 0.25);
 }
 
-/* =================================
-   MOVEMENT ANIMATIONS
-================================= */
-
-/* Smoothly move multiple cats */
+/* MOVEMENT ANIMATION */
 
 .tile.moving {
     animation: catMove 180ms ease-out;
@@ -233,7 +204,10 @@ button:active {
 
 @keyframes catMove {
     from {
-        transform: translate(var(--dx), var(--dy));
+        transform: translate(
+            var(--dx, 0),
+            var(--dy, 0)
+        );
     }
 
     to {
@@ -241,160 +215,138 @@ button:active {
     }
 }
 
-/* Cat appearance animation */
+/* INSTRUCTIONS */
 
-.tile:not(.empty) .animal {
-    animation: catPop 180ms ease-out;
+.instructions {
+    margin-top: 30px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e8eaf0;
+    border-radius: 14px;
+    text-align: left;
 }
 
-@keyframes catPop {
-    0% {
-        transform: scale(0.65);
-    }
-
-    70% {
-        transform: scale(1.15);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+.instructions h3 {
+    font-size: 17px;
+    margin-bottom: 12px;
+    color: #252a35;
 }
 
-/* =================================
-   EVOLUTION COLLECTION
-================================= */
-
-.evolution {
-    background: white;
-    padding: 18px;
-    margin-top: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(120, 65, 85, 0.08);
+.instructions p {
+    color: #777d89;
+    font-size: 14px;
+    margin: 7px 0;
 }
 
-.evolution h2 {
-    font-size: 20px;
-    margin-top: 5px;
-}
+/* CAT COLLECTION */
 
 #cat-list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.evolution {
+    margin-top: 35px;
+}
+
+.evolution h2 {
+    font-size: 23px;
+    margin-bottom: 8px;
 }
 
 .cat-item {
-    background: #fff0f5;
-    padding: 10px 3px;
-    border-radius: 9px;
-    font-size: 12px;
-    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 15px 8px;
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid #e8eaf0;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    transition: 0.2s ease;
 }
 
 .cat-item:hover {
-    transform: scale(1.04);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
 }
 
-.cat-item .animal {
-    display: block;
-    font-size: 27px;
-    margin-bottom: 5px;
+.cat-item span {
+    font-size: 30px;
+}
+
+.cat-item strong {
+    font-size: 14px;
+    color: #303644;
+}
+
+.cat-item small {
+    font-size: 12px;
+    color: #999eaa;
 }
 
 .cat-item.locked {
-    opacity: 0.4;
+    background: #f1f2f5;
+    opacity: 0.6;
 }
 
-/* =================================
-   INSTRUCTIONS
-================================= */
+/* MESSAGE */
 
-.instructions {
-    margin: 25px 0;
-    line-height: 1.6;
-    color: #947780;
+#message {
+    margin: 15px 0;
+    color: #9b741e;
+    font-weight: 600;
     font-size: 14px;
 }
 
-/* Footer */
+/* FOOTER */
 
 footer {
-    padding: 20px;
-    color: #a38c93;
+    padding: 25px 15px;
+    color: #a0a4ad;
+    font-size: 12px;
 }
 
-/* =================================
-   MOBILE RESPONSIVENESS
-================================= */
+/* MOBILE */
 
-@media (max-width: 400px) {
-
+@media (max-width: 450px) {
     header h1 {
-        font-size: 30px;
+        font-size: 29px;
     }
 
     .game-container {
-        max-width: 98%;
+        margin: 20px auto;
     }
 
     .game-board,
     .board {
-        gap: 6px;
+        gap: 7px;
         padding: 7px;
     }
 
     .tile {
-        font-size: 23px;
+        border-radius: 9px;
     }
 
-    .game-info {
-        gap: 8px;
+    .tile .animal {
+        font-size: 27px;
     }
 
-    .score-box {
-        padding: 9px 17px;
-        min-width: 95px;
+    .tile .value {
+        font-size: 11px;
     }
 
     #cat-list {
-        gap: 6px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .cat-item {
+        padding: 12px 5px;
     }
 }
-
-.cat-image {
-    width: 75%;
-    height: 75%;
-    object-fit: contain;
-    display: block;
-    margin: auto;
-}
-
-.tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.tile .value {
-    position: absolute;
-    bottom: 3px;
-    right: 5px;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* Respect reduced-motion settings */
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-
