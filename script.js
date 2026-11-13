@@ -5,7 +5,7 @@
 
 // Game variables
 console.log("page loaded");
-alert("✅ JavaScript file loaded successfully! V1.2 fixed scrolling issuesand pngs);
+alert("✅ JavaScript file loaded successfully! V1.2 fixed scrolling issuesand pngs");
 
 let board = [];
 let score = 0;
