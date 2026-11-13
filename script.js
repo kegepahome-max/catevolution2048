@@ -414,6 +414,7 @@ function checkGameOver() {
 }
 
 // =====================================
+// =====================================
 // KEYBOARD CONTROLS
 // =====================================
 
@@ -426,48 +427,14 @@ document.addEventListener("keydown", function(event) {
         ArrowDown: "down"
     };
 
+    // Prevent the page from scrolling
     if (directions[event.key]) {
-
         event.preventDefault();
-
         move(directions[event.key]);
     }
+
 });
 
-// =====================================
-// MOBILE SWIPE CONTROLS
-// =====================================
-
-let touchStartX = 0;
-let touchStartY = 0;
-
-boardElement.addEventListener("touchstart", function(event) {
-
-    touchStartX = event.changedTouches[0].clientX;
-    touchStartY = event.changedTouches[0].clientY;
-
-}, { passive: true });
-
-boardElement.addEventListener("touchend", function(event) {
-
-    const dx =
-        event.changedTouches[0].clientX - touchStartX;
-
-    const dy =
-        event.changedTouches[0].clientY - touchStartY;
-
-    if (Math.max(Math.abs(dx), Math.abs(dy)) < 25) return;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-
-        move(dx > 0 ? "right" : "left");
-
-    } else {
-
-        move(dy > 0 ? "down" : "up");
-    }
-
-}, { passive: true });
 
 // =====================================
 // NEW GAME BUTTON
