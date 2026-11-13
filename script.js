@@ -26,55 +26,55 @@ let animationPositions = [];
 const cats = {
     2: {
         name: "Kitten",
-        image: "images/kitten.png"
+        image: "2"
     },
     4: {
         name: "House Cat",
-        image: "images/house-cat.png"
+        image: "4"
     },
     8: {
         name: "Happy Cat",
-        image: "images/happy-cat.png"
+        image: "8"
     },
     16: {
         name: "Black Cat",
-        image: "images/black-cat.png"
+        image: "16"
     },
     32: {
         name: "Wildcat",
-        image: "images/wildcat.png"
+        image: "32"
     },
     64: {
         name: "Serval",
-        image: "images/serval.png"
+        image: "64"
     },
     128: {
         name: "Cheetah",
-        image: "images/cheetah.png"
+        image: "128
     },
     256: {
         name: "Leopard",
-        image: "images/leopard.png"
+        image: "256"
     },
     512: {
         name: "Jaguar",
-        image: "images/jaguar.png"
+        image: "512"
     },
     1024: {
         name: "Tiger",
-        image: "images/tiger.png"
+        image: "1024"
     },
     2048: {
         name: "Lion",
-        image: "images/lion.png"
+        image: "2048"
     },
     4096: {
         name: "White Lion",
-        image: "images/white-lion.png"
+        image: "4096"
     },
     8192: {
         name: "Ultimate Feline",
-        image: "images/ultimate-feline.png"
+        image: "8192"
     }
 };
 // Find game elements
