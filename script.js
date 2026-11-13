@@ -4,7 +4,7 @@
 // =====================================
 
 // Game variables
-
+console.log("page loaded");
 alert("✅ JavaScript file loaded successfully! V1.1 fixed scrolling issues> DO NOT PUT IN FINAL DEPLOY THING");
 
 let board = [];
