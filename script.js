@@ -141,9 +141,11 @@ function addTile() {
 
 function updateBoard() {
 
-    console.log("Before updateBoard:", window.scrollY);
+    console.log("UPDATE START:", window.scrollY);
 
     boardElement.innerHTML = "";
+
+    console.log("AFTER CLEAR:", window.scrollY);
 
     for (let r = 0; r < SIZE; r++) {
 
@@ -207,6 +209,9 @@ function updateBoard() {
     bestElement.textContent = best;
 
     updateCatCollection();
+
+        console.log("UPDATE END:", window.scrollY);
+
 }
 
 // =====================================
@@ -500,3 +505,11 @@ document.getElementById("new-game")
 bestElement.textContent = best;
 
 startGame();
+
+window.addEventListener("scroll", () => {
+    console.log("SCROLL EVENT:", window.scrollY);
+});
+
+window.addEventListener("focus", () => {
+    console.log("WINDOW FOCUSED");
+});
