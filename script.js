@@ -141,6 +141,8 @@ function addTile() {
 
 function updateBoard() {
 
+    console.log("Before updateBoard:", window.scrollY);
+
     boardElement.innerHTML = "";
 
     for (let r = 0; r < SIZE; r++) {
@@ -248,6 +250,7 @@ function updateCatCollection() {
 
         list.appendChild(item);
     }
+    console.log("After updateBoard:", window.scrollY);
 }
 
 // =====================================
