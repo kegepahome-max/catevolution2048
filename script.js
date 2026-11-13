@@ -5,7 +5,7 @@
 
 // Game variables
 
-alert("✅ JavaScript file loaded successfully!");
+alert("✅ JavaScript file loaded successfully! V1.1 fixed scrolling issues> DO NOT PUT IN FINAL DEPLOY THING");
 
 let board = [];
 let score = 0;
