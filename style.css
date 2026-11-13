@@ -1,13 +1,17 @@
 
 /* =================================
    CAT EVOLUTION 2048
-   Complete CSS
+   COMPLETE UPDATED CSS
 ================================= */
 
 /* General styling */
 
 * {
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: auto;
 }
 
 body {
@@ -136,19 +140,25 @@ button:active {
     will-change: transform;
 }
 
-/* Cat emoji */
+/* Custom cat images */
 
-.tile .animal {
-    font-size: clamp(25px, 8vw, 42px);
-    line-height: 1.2;
+.tile .cat-image {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
     display: block;
+    pointer-events: none;
 }
 
 /* Tile number */
 
 .tile .value {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+
     font-size: 12px;
-    margin-top: 3px;
+    font-weight: bold;
     color: #59434b;
 }
 
@@ -243,7 +253,7 @@ button:active {
 
 /* Cat appearance animation */
 
-.tile:not(.empty) .animal {
+.tile:not(.empty) .cat-image {
     animation: catPop 180ms ease-out;
 }
 
@@ -284,6 +294,8 @@ button:active {
     gap: 10px;
 }
 
+/* Individual collection items */
+
 .cat-item {
     background: #fff0f5;
     padding: 10px 3px;
@@ -296,14 +308,26 @@ button:active {
     transform: scale(1.04);
 }
 
+/* Collection cat images */
+
+.cat-item .cat-image {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+/* Locked cats */
+
+.cat-item.locked {
+    opacity: 0.4;
+}
+
 .cat-item .animal {
     display: block;
     font-size: 27px;
     margin-bottom: 5px;
-}
-
-.cat-item.locked {
-    opacity: 0.4;
 }
 
 /* =================================
@@ -360,11 +384,19 @@ footer {
     #cat-list {
         gap: 6px;
     }
+
+    .cat-item .cat-image {
+        width: 50px;
+        height: 50px;
+    }
 }
 
-/* Respect reduced-motion settings */
+/* =================================
+   REDUCED MOTION
+================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
