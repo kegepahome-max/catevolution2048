@@ -362,6 +362,30 @@ footer {
     }
 }
 
+.cat-image {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+.tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.tile .value {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
 /* Respect reduced-motion settings */
 
 @media (prefers-reduced-motion: reduce) {
@@ -372,3 +396,5 @@ footer {
         transition-duration: 0.01ms !important;
     }
 }
+
+
