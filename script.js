@@ -139,13 +139,17 @@ function addTile() {
 // DISPLAY BOARD
 // =====================================
 
+
 function updateBoard() {
 
     console.log("UPDATE START:", window.scrollY);
 
-    boardElement.innerHTML = "";
+    console.log("ACTIVE ELEMENT:", document.activeElement);
+    console.log("FOCUSED ELEMENT:", document.activeElement?.outerHTML);
 
-    console.log("AFTER CLEAR:", window.scrollY);
+    // Build the new board separately without immediately
+    // removing the existing tiles.
+    const fragment = document.createDocumentFragment();
 
     for (let r = 0; r < SIZE; r++) {
 
@@ -167,7 +171,6 @@ function updateBoard() {
                 };
 
                 // Find this tile's movement
-
                 const movement = animationPositions.find(
                     position =>
                         position.to.r === r &&
@@ -193,25 +196,33 @@ function updateBoard() {
                     tile.classList.add("moving");
                 }
 
+                // Add cat image and tile value
                 tile.innerHTML = `
-    <img src="${cat.image}" class="cat-image">
-    <small class="value">${value}</small>
-`;
+                    <img src="${cat.image}" class="cat-image">
+                    <small class="value">${value}</small>
+                `;
 
                 tile.title = cat.name;
             }
 
-            boardElement.appendChild(tile);
+            // Add tile to fragment instead of board directly
+            fragment.appendChild(tile);
         }
     }
 
+    // Replace all tiles in one operation
+    boardElement.replaceChildren(fragment);
+
+    console.log("AFTER REPLACE:", window.scrollY);
+
+    // Update score displays
     scoreElement.textContent = score;
     bestElement.textContent = best;
 
+    // Update cat evolution collection
     updateCatCollection();
 
-        console.log("UPDATE END:", window.scrollY);
-
+    console.log("UPDATE END:", window.scrollY);
 }
 
 // =====================================
