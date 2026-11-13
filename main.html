@@ -1,58 +1,59 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <!-- Character Encoding -->
     <meta charset="UTF-8">
-
-    <!-- Responsive Design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Website Title -->
-    <title>My Website</title>
+    <title>Cat Evolution 2048</title>
 
-    <!-- Website Description -->
-    <meta name="description" content="Welcome to my website!">
-
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- Header -->
     <header>
-        <h1>My Website</h1>
-
-        <!-- Navigation -->
-        <nav>
- 
-        </nav>
+        <h1>🐱 Cat Evolution</h1>
+        <p>Merge cats and discover new species!</p>
     </header>
 
-    <!-- Main Content -->
-    <main>
+    <main class="game-container">
 
-        <section>
-            <h2>Welcome!</h2>
-            <p>This is my first website.</p>
+        <section class="game-info">
+
+            <div class="score-box">
+                <span>Score</span>
+                <h2 id="score">0</h2>
+            </div>
+
+            <div class="score-box">
+                <span>Best</span>
+                <h2 id="best">0</h2>
+            </div>
+
         </section>
 
-        <div>
-            <h2>Visit my Brunch page!</h2>
-            <p>https://brunch.co.kr/@ae7006eeb6274c1</p>
-        </div>
+        <button id="new-game">New Game</button>
+
+        <section id="board" class="game-board">
+            <!-- Game tiles will appear here -->
+        </section>
+
+        <section class="instructions">
+            <h3>How to Play</h3>
+            <p>Use your arrow keys to move the cats.</p>
+            <p>Merge two identical cats to evolve!</p>
+            <p>Reach 8192 to discover the ultimate feline.</p>
+        </section>
 
     </main>
 
-    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 My Website. All rights reserved.</p>
+        <p>Cat Evolution 2048 © 2026</p>
     </footer>
 
-    <!-- JavaScript -->
+    <script src="script.js"></script>
 
 </body>
-
 </html>
