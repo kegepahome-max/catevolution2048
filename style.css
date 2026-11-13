@@ -1,1 +1,146 @@
 
+/* General styling */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff5f7;
+    color: #59434b;
+    text-align: center;
+}
+
+/* Header */
+
+header {
+    padding: 25px;
+}
+
+header h1 {
+    font-size: 38px;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #947780;
+}
+
+/* Game container */
+
+.game-container {
+    width: 380px;
+    max-width: 95%;
+    margin: auto;
+}
+
+/* Score */
+
+.game-info {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+.score-box {
+    background: #e9b8c7;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 10px;
+    min-width: 110px;
+}
+
+.score-box h2 {
+    margin: 5px;
+}
+
+/* Button */
+
+button {
+    background: #d97899;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+button:hover {
+    background: #bd5d7e;
+}
+
+/* Game board */
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    background: #e8cbd3;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.tile {
+    aspect-ratio: 1;
+    background: #f5e1e7;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Tile colours */
+
+.tile-2 { background: #ffe5ed; }
+.tile-4 { background: #fbd2df; }
+.tile-8 { background: #f7b6cb; }
+.tile-16 { background: #f49bb8; }
+.tile-32 { background: #ed83a6; }
+.tile-64 { background: #e66d96; }
+.tile-128 { background: #d95783; color: white; }
+.tile-256 { background: #c94374; color: white; }
+.tile-512 { background: #b72e65; color: white; }
+.tile-1024 { background: #a5235c; color: white; }
+.tile-2048 { background: #e7b84b; color: white; }
+.tile-4096 { background: #b8a2dc; color: white; }
+.tile-8192 { background: #8064b8; color: white; }
+
+/* Instructions */
+
+.instructions {
+    margin: 30px 0;
+    line-height: 1.6;
+}
+
+/* Footer */
+
+footer {
+    padding: 20px;
+    color: #a38c93;
+}
+
+/* Mobile */
+
+@media (max-width: 400px) {
+    header h1 {
+        font-size: 30px;
+    }
+
+    .game-board {
+        gap: 6px;
+        padding: 7px;
+    }
+
+    .tile {
+        font-size: 23px;
+    }
+}
+
