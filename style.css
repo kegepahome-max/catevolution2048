@@ -260,15 +260,36 @@ button:active {
 
 @keyframes catPop {
     0% {
-        transform: scale(0.80);
+        transform: scale(0.5);
+        filter: brightness(1);
+        box-shadow: 0 0 0 transparent;
     }
 
-    50% {
-        transform: scale(1.08);
+    25% {
+        transform: scale(1.3);
+        filter: brightness(2.5);
+        box-shadow: 0 0 30px #ffb6e1;
+    }
+
+    45% {
+        transform: scale(0.85);
+        filter: brightness(1.5);
+    }
+
+    65% {
+        transform: scale(1.15);
+        filter: brightness(1.3);
+        box-shadow: 0 0 20px #ffb6e1;
+    }
+
+    80% {
+        transform: scale(0.95);
     }
 
     100% {
         transform: scale(1);
+        filter: brightness(1);
+        box-shadow: 0 0 12px #d97899;
     }
 }
 
