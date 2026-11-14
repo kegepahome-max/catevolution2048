@@ -181,13 +181,25 @@ function updateBoard() {
                     if (movement.fromPositions.length > 1) {
                         tile.classList.add("merge-result");
                     } else {
-                        const cellSize = boardElement.clientWidth / SIZE;
+                     const oldTileIndex =
+    movement.from.r * SIZE + movement.from.c;
 
-                        const dx =
-                            (movement.from.c - movement.to.c) * cellSize;
+const oldTile = oldTiles[oldTileIndex];
 
-                        const dy =
-                            (movement.from.r - movement.to.r) * cellSize;
+const cellRect = oldTiles[0].getBoundingClientRect();
+const boardStyle = getComputedStyle(boardElement);
+
+const stepX =
+    cellRect.width + parseFloat(boardStyle.columnGap);
+
+const stepY =
+    cellRect.height + parseFloat(boardStyle.rowGap);
+
+const dx =
+    (movement.from.c - movement.to.c) * stepX;
+
+const dy =
+    (movement.from.r - movement.to.r) * stepY;
 
                         tile.style.setProperty("--dx", dx + "px");
                         tile.style.setProperty("--dy", dy + "px");
@@ -291,7 +303,16 @@ setTimeout(() => {
         isAnimating = false;
     }, 650);
 
-}, 700);
+}, 350);
+
+    } else {
+        // Release movement lock after normal sliding
+        setTimeout(() => {
+            if (token !== animationId) return;
+
+            isAnimating = false;
+        }, 350);
+    }
 
     // Update scores
     scoreElement.textContent = score;
