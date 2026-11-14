@@ -21,6 +21,9 @@ const WIN_TILE = 8192;
 
 let animationPositions = [];
 
+let isAnimating = false;
+let animationId = 0;
+
 // Cat evolution progression
 
 const cats = {
