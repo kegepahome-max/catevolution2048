@@ -177,14 +177,14 @@ function updateBoard() {
                         position.to.c === c
                 );
 
-                if (movement) {
-                    if (movement.fromPositions.length > 1) {
-                        tile.classList.add("merge-result");
-                    } else {
-                     const oldTileIndex =
-    movement.from.r * SIZE + movement.from.c;
-
-const oldTile = oldTiles[oldTileIndex];
+if (movement) {
+    if (movement.fromPositions.length > 1) {
+        tile.classList.add("merge-result");
+    } else if (
+        movement.from.r !== r ||
+        movement.from.c !== c
+    ) {
+                     
 
 const cellRect = oldTiles[0].getBoundingClientRect();
 const boardStyle = getComputedStyle(boardElement);
@@ -301,8 +301,8 @@ setTimeout(() => {
         });
 
         isAnimating = false;
-    }, 650);
-
+    }, 350);
+    
 }, 350);
 
     } else {
