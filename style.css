@@ -426,3 +426,108 @@ footer {
         transition-duration: 0.09ms !important;
     }
 }
+
+/* =================================
+   NEW SIDE CAT COLLECTION
+================================= */
+
+.new-cat-collection {
+    position: absolute;
+    top: 180px;
+    left: calc(50% + 240px);
+    width: 250px;
+
+    background: #fff0f5;
+    border: 2px solid #e9b8c7;
+    border-radius: 12px;
+
+    text-align: left;
+    overflow: hidden;
+}
+
+/* Open and close button */
+
+.new-cat-collection summary {
+    padding: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    list-style: none;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.new-cat-collection summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Arrow animation */
+
+.new-cat-collection summary span {
+    transition: transform 0.25s ease;
+}
+
+.new-cat-collection details[open] summary span {
+    transform: rotate(180deg);
+}
+
+/* Cat collection grid */
+
+#new-cat-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px;
+}
+
+/* Individual cat cards */
+
+.new-cat-card {
+    background: white;
+    padding: 8px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Cat images */
+
+.new-cat-card img,
+.mystery-cat {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+}
+
+/* Ultimate Feline question mark */
+
+.mystery-cat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
+}
+
+/* Cat names and numbers */
+
+.new-cat-card p {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.new-cat-card small {
+    color: #80616e;
+}
+
+/* Mobile responsiveness */
+
+@media (max-width: 850px) {
+    .new-cat-collection {
+        position: static;
+        width: 420px;
+        max-width: 95%;
+        margin: 20px auto;
+    }
+}
