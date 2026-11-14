@@ -5,7 +5,7 @@
 
 // Game variables
 console.log("page loaded");
-alert("✅ JavaScript file loaded successfully! V1.4");
+alert("Welcome to Cat Evolution 2048! Enjoy!");
 
 let board = [];
 let score = 0;
