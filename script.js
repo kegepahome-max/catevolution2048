@@ -142,68 +142,51 @@ function addTile() {
 // DISPLAY BOARD
 // =====================================
 
-
 function updateBoard() {
-
-    console.log("UPDATE START:", window.scrollY);
-
-    console.log("ACTIVE ELEMENT:", document.activeElement);
-    console.log("FOCUSED ELEMENT:", document.activeElement?.outerHTML);
-
-    // Build the new board separately without immediately
-    // removing the existing tiles.
+    const oldTiles = Array.from(boardElement.children);
     const fragment = document.createDocumentFragment();
+    const newTiles = [];
 
+    // Build the new board
     for (let r = 0; r < SIZE; r++) {
-
         for (let c = 0; c < SIZE; c++) {
-
-            let value = board[r][c];
-
-            let tile = document.createElement("div");
+            const value = board[r][c];
+            const tile = document.createElement("div");
 
             tile.className = value === 0
                 ? "tile empty"
                 : "tile tile-" + value;
 
             if (value !== 0) {
-
                 const cat = cats[value] || {
                     name: "Mystery Cat",
-                    emoji: "🐱"
+                    image: ""
                 };
 
-                // Find this tile's movement
                 const movement = animationPositions.find(
                     position =>
                         position.to.r === r &&
                         position.to.c === c
                 );
 
-               if (movement) {
+                if (movement) {
+                    if (movement.fromPositions.length > 1) {
+                        tile.classList.add("merge-result");
+                    } else {
+                        const cellSize = boardElement.clientWidth / SIZE;
 
-    const cellSize =
-        boardElement.clientWidth / SIZE;
+                        const dx =
+                            (movement.from.c - movement.to.c) * cellSize;
 
-    const dx =
-        (movement.from.c - movement.to.c) *
-        cellSize;
+                        const dy =
+                            (movement.from.r - movement.to.r) * cellSize;
 
-    const dy =
-        (movement.from.r - movement.to.r) *
-        cellSize;
+                        tile.style.setProperty("--dx", dx + "px");
+                        tile.style.setProperty("--dy", dy + "px");
+                        tile.classList.add("moving");
+                    }
+                }
 
-    tile.style.setProperty("--dx", dx + "px");
-    tile.style.setProperty("--dy", dy + "px");
-
-    if (movement.fromPositions.length > 1) {
-        tile.classList.add("merging");
-    } else {
-        tile.classList.add("moving");
-    }
-}
-
-                // Add cat image and tile value
                 tile.innerHTML = `
                     <img src="${cat.image}" class="cat-image">
                     <small class="value">${value}</small>
@@ -212,24 +195,109 @@ function updateBoard() {
                 tile.title = cat.name;
             }
 
-            // Add tile to fragment instead of board directly
+            newTiles.push(tile);
             fragment.appendChild(tile);
         }
     }
 
-    // Replace all tiles in one operation
+    // Create copies of cats that will merge
+    const mergeGhosts = [];
+
+    animationPositions.forEach(movement => {
+        if (movement.fromPositions.length < 2) return;
+
+        const targetIndex = movement.to.r * SIZE + movement.to.c;
+        const targetTile = newTiles[targetIndex];
+
+        movement.fromPositions.forEach(position => {
+            const sourceIndex = position.r * SIZE + position.c;
+            const originalTile = oldTiles[sourceIndex];
+
+            if (!originalTile || !targetTile) return;
+
+            const ghost = originalTile.cloneNode(true);
+            const rect = originalTile.getBoundingClientRect();
+
+            ghost.classList.remove("moving", "merging", "merge-result");
+            ghost.classList.add("merge-ghost");
+
+            ghost.style.left = rect.left + "px";
+            ghost.style.top = rect.top + "px";
+            ghost.style.width = rect.width + "px";
+            ghost.style.height = rect.height + "px";
+            ghost.style.transform = "translate(0, 0)";
+
+            document.body.appendChild(ghost);
+
+            mergeGhosts.push({
+                ghost: ghost,
+                target: targetTile
+            });
+        });
+    });
+
+    // Display the new board
     boardElement.replaceChildren(fragment);
 
-    console.log("AFTER REPLACE:", window.scrollY);
+    const token = ++animationId;
+    isAnimating = animationPositions.length > 0;
 
-    // Update score displays
+    // Animate cats sliding together
+    if (mergeGhosts.length > 0) {
+        requestAnimationFrame(() => {
+            mergeGhosts.forEach(item => {
+                const targetRect = item.target.getBoundingClientRect();
+                const ghostRect = item.ghost.getBoundingClientRect();
+
+                const dx = targetRect.left - ghostRect.left;
+                const dy = targetRect.top - ghostRect.top;
+
+                item.ghost.style.transform =
+                    `translate(${dx}px, ${dy}px)`;
+            });
+        });
+
+        // Wait for cats to meet
+        setTimeout(() => {
+            if (token !== animationId) return;
+
+            mergeGhosts.forEach(item => item.ghost.remove());
+
+            const results = boardElement.querySelectorAll(".merge-result");
+
+            results.forEach(tile => {
+                tile.classList.remove("merge-result");
+                tile.classList.add("merging");
+            });
+
+            // Finish the merge animation
+            setTimeout(() => {
+                if (token !== animationId) return;
+
+                results.forEach(tile => {
+                    tile.classList.remove("merging");
+                });
+
+                isAnimating = false;
+            }, 650);
+
+        }, 1000);
+
+    } else {
+        // Finish normal movement
+        setTimeout(() => {
+            if (token !== animationId) return;
+            isAnimating = false;
+        }, 700);
+    }
+
+    // Update scores
     scoreElement.textContent = score;
     bestElement.textContent = best;
 
-    // Update cat evolution collection
+    // Update collections
     updateCatCollection();
-
-    console.log("UPDATE END:", window.scrollY);
+    updateNewCatCollection();
 }
 
 // =====================================
