@@ -445,6 +445,8 @@ footer {
     top: 180px;
     left: calc(50% + 240px);
     width: 250px;
+    max-height: 75vh;
+    overflow-y: auto;
 
     background: #fff0f5;
     border: 2px solid #e9b8c7;
@@ -478,7 +480,7 @@ footer {
     transition: transform 0.25s ease;
 }
 
-.new-cat-collection details[open] summary span {
+.new-cat-collection[open] summary span {
     transform: rotate(180deg);
 }
 
