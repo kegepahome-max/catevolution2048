@@ -301,9 +301,9 @@ setTimeout(() => {
         });
 
         isAnimating = false;
-    }, 350);
+    }, 220);
     
-}, 350);
+}, 220);
 
     } else {
         // Release movement lock after normal sliding
@@ -311,7 +311,7 @@ setTimeout(() => {
             if (token !== animationId) return;
 
             isAnimating = false;
-        }, 350);
+        }, 220);
     }
 
     // Update scores
