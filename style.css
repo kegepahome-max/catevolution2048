@@ -231,12 +231,15 @@ button:active {
     color: white;
 }
 
+
 /* =================================
    MOVEMENT ANIMATIONS
 ================================= */
 
+/* Normal cat movement */
+
 .tile.moving {
-    animation: catMove 400ms ease-in-out;
+    animation: catMove 700ms cubic-bezier(0.22, 0.7, 0.25, 1) both;
     z-index: 2;
     will-change: transform;
 }
@@ -251,10 +254,27 @@ button:active {
     }
 }
 
-/* Cat evolution animation */
+/* Original cats sliding together */
+
+.tile.merge-ghost {
+    position: fixed;
+    margin: 0;
+    pointer-events: none;
+    z-index: 9999;
+
+    transition: transform 700ms cubic-bezier(0.22, 0.7, 0.25, 1);
+}
+
+/* Hide the new cat until the merge */
+
+.tile.merge-result {
+    opacity: 0;
+}
+
+/* New evolved cat */
 
 .tile.merging {
-    animation: catPop 500ms ease-in-out 400ms both;
+    animation: catPop 650ms ease-out both;
     z-index: 3;
 }
 
@@ -292,6 +312,7 @@ button:active {
         box-shadow: 0 0 12px #d97899;
     }
 }
+
 
 /* =================================
    EVOLUTION COLLECTION
