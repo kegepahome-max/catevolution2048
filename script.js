@@ -276,6 +276,55 @@ function updateCatCollection() {
     console.log("After updateBoard:", window.scrollY);
 }
 
+// =================================
+// NEW SIDE CAT COLLECTION
+// =================================
+
+function updateNewCatCollection() {
+
+    const container = document.getElementById("new-cat-list");
+
+    if (!container) return;
+
+    const highestCat = Math.max(...board.flat());
+
+    container.innerHTML = "";
+
+    Object.entries(cats).forEach(([value, cat]) => {
+
+        const catValue = Number(value);
+
+        const card = document.createElement("div");
+
+        card.className = "new-cat-card";
+
+        // Ultimate Feline mystery
+        if (catValue === 8192) {
+
+            card.innerHTML = `
+                <div class="mystery-cat">❓</div>
+                <p>Ultimate Feline</p>
+                <small>8192</small>
+            `;
+
+        } else {
+
+            // Only show unlocked cats
+            if (catValue > highestCat) return;
+
+            card.innerHTML = `
+                <img src="${cat.image}" alt="${cat.name}">
+                <p>${cat.name}</p>
+                <small>${catValue}</small>
+            `;
+
+        }
+
+        container.appendChild(card);
+
+    });
+}
+
 // =====================================
 // MOVE AND MERGE
 // =====================================
