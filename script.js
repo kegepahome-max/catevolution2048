@@ -93,6 +93,14 @@ const messageElement = document.getElementById("message");
 
 function startGame() {
 
+        // Cancel any previous animations
+    animationId++;
+    isAnimating = false;
+
+    document.querySelectorAll(".merge-ghost").forEach(ghost => {
+        ghost.remove();
+    });
+
     board = Array(SIZE).fill().map(() =>
         Array(SIZE).fill(0)
     );
@@ -257,39 +265,33 @@ function updateBoard() {
             });
         });
 
-        // Wait for cats to meet
-        setTimeout(() => {
-            if (token !== animationId) return;
+       // Wait until both cats finish sliding together
+setTimeout(() => {
+    if (token !== animationId) return;
 
-            mergeGhosts.forEach(item => item.ghost.remove());
+    // Remove the original cats
+    mergeGhosts.forEach(item => item.ghost.remove());
 
-            const results = boardElement.querySelectorAll(".merge-result");
+    // NOW reveal the evolved cat
+    const results = boardElement.querySelectorAll(".merge-result");
 
-            results.forEach(tile => {
-                tile.classList.remove("merge-result");
-                tile.classList.add("merging");
-            });
+    results.forEach(tile => {
+        tile.classList.remove("merge-result");
+        tile.classList.add("merging");
+    });
 
-            // Finish the merge animation
-            setTimeout(() => {
-                if (token !== animationId) return;
+    // Finish the pop animation
+    setTimeout(() => {
+        if (token !== animationId) return;
 
-                results.forEach(tile => {
-                    tile.classList.remove("merging");
-                });
+        results.forEach(tile => {
+            tile.classList.remove("merging");
+        });
 
-                isAnimating = false;
-            }, 650);
+        isAnimating = false;
+    }, 650);
 
-        }, 1000);
-
-    } else {
-        // Finish normal movement
-        setTimeout(() => {
-            if (token !== animationId) return;
-            isAnimating = false;
-        }, 700);
-    }
+}, 700);
 
     // Update scores
     scoreElement.textContent = score;
@@ -399,8 +401,8 @@ function updateNewCatCollection() {
 
 function move(direction) {
 
-    if (gameOver) return;
-
+if (gameOver || isAnimating) return;
+    
     if (won) {
         const continuePlaying = confirm(
             "You reached 8192! Continue playing?"
