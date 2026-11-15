@@ -1,3 +1,4 @@
+
 /* =================================
    CAT EVOLUTION 2048
    COMPLETE UPDATED CSS
@@ -237,7 +238,7 @@ button:active {
 
 /* Normal cat movement */
 .tile.moving {
-    animation: catMove 220ms cubic-bezier(0.22, 0.7, 0.25, 1) both;
+    animation: catMove 350ms cubic-bezier(0.22, 0.7, 0.25, 1) both;
     z-index: 5;
     will-change: transform;
 }
@@ -258,7 +259,7 @@ button:active {
     margin: 0;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 220ms cubic-bezier(0.22, 0.7, 0.25, 1);
+    transition: transform 350ms cubic-bezier(0.22, 0.7, 0.25, 1);
 }
 
 /* Hide evolved cat before merge */
@@ -269,7 +270,7 @@ button:active {
 /* Evolved cat pop */
 .tile.merging {
     opacity: 1;
-    animation: catPop 220ms ease-out both;
+    animation: catPop 350ms ease-out both;
     z-index: 6;
 }
 
@@ -444,17 +445,15 @@ footer {
     top: 180px;
     left: calc(50% + 240px);
     width: 250px;
-
-    height: 450px;
+    max-height: 75vh;
     overflow-y: auto;
-    overflow-x: hidden;
 
     background: #fff0f5;
     border: 2px solid #e9b8c7;
     border-radius: 12px;
 
     text-align: left;
-    overscroll-behavior: contain;
+    overflow: hidden;
 }
 
 /* Open and close button */
@@ -542,4 +541,4 @@ footer {
         max-width: 95%;
         margin: 20px auto;
     }
-})
+}
