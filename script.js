@@ -1,4 +1,3 @@
-
 // =====================================
 // CAT EVOLUTION 2048
 // =====================================
@@ -23,10 +22,6 @@ let animationPositions = [];
 
 let isAnimating = false;
 let animationId = 0;
-
-let spawnedPosition = null;
-let soundEnabled = true;
-let audioContext = null;
 
 // Cat evolution progression
 
@@ -114,10 +109,8 @@ function startGame() {
     gameOver = false;
     animationPositions = [];
 
-addTile();
-addTile();
-
-spawnedPosition = null;
+    addTile();
+    addTile();
 
     messageElement.textContent =
         "Combine matching cats to evolve!";
@@ -129,46 +122,18 @@ spawnedPosition = null;
 // ADD RANDOM TILE
 // =====================================
 
-function addTile(direction = null) {
+function addTile() {
 
     let emptyCells = [];
 
     for (let r = 0; r < SIZE; r++) {
         for (let c = 0; c < SIZE; c++) {
+
             if (board[r][c] === 0) {
-                emptyCells.push({ r, c });
+                emptyCells.push([r, c]);
             }
         }
     }
-
-    if (emptyCells.length === 0) return;
-
-    let oppositeEdge = emptyCells;
-
-    if (direction === "down") {
-        oppositeEdge = emptyCells.filter(p => p.r === 0);
-    } else if (direction === "up") {
-        oppositeEdge = emptyCells.filter(p => p.r === SIZE - 1);
-    } else if (direction === "left") {
-        oppositeEdge = emptyCells.filter(p => p.c === SIZE - 1);
-    } else if (direction === "right") {
-        oppositeEdge = emptyCells.filter(p => p.c === 0);
-    }
-
-    // If the opposite edge is full, use any empty cell
-    if (oppositeEdge.length === 0) {
-        oppositeEdge = emptyCells;
-    }
-
-    const position =
-        oppositeEdge[Math.floor(Math.random() * oppositeEdge.length)];
-
-    const { r, c } = position;
-
-    board[r][c] = Math.random() < 0.9 ? 2 : 4;
-
-    spawnedPosition = { r, c };
-}
 
     if (emptyCells.length === 0) return;
 
@@ -198,14 +163,6 @@ function updateBoard() {
             tile.className = value === 0
                 ? "tile empty"
                 : "tile tile-" + value;
-            if (
-    value !== 0 &&
-    spawnedPosition &&
-    spawnedPosition.r === r &&
-    spawnedPosition.c === c
-) {
-    tile.classList.add("spawning");
-}
 
             if (value !== 0) {
                 const cat = cats[value] || {
@@ -301,18 +258,8 @@ const dy =
     // Display the new board
     boardElement.replaceChildren(fragment);
 
-const token = ++animationId;
-isAnimating = animationPositions.length > 0;
-
-const finishAnimation = () => {
-    if (token !== animationId) return;
-
-    isAnimating = false;
-
-    if (onComplete) {
-        onComplete();
-    }
-};
+    const token = ++animationId;
+    isAnimating = animationPositions.length > 0;
 
     // Animate cats sliding together
     if (mergeGhosts.length > 0) {
@@ -325,7 +272,7 @@ const finishAnimation = () => {
                 const dy = targetRect.top - ghostRect.top;
 
                 item.ghost.style.transform =
-                    `translate(${dx}px, ${dy}px)`;
+                    translate(${dx}px, ${dy}px);
             });
         });
 
@@ -345,13 +292,12 @@ setTimeout(() => {
     });
 
     // Finish the pop animation
-setTimeout(() => {
-    finishAnimation();
+    setTimeout(() => {
+        if (token !== animationId) return;
 
-    results.forEach(tile => {
-        tile.classList.remove("merging");
-    });
-}, 220);
+        results.forEach(tile => {
+            tile.classList.remove("merging");
+        });
 
         isAnimating = false;
     }, 220);
@@ -361,9 +307,12 @@ setTimeout(() => {
     } else {
         // Release movement lock after normal sliding
         setTimeout(() => {
-    finishAnimation();
-}, 220);
-    
+            if (token !== animationId) return;
+
+            isAnimating = false;
+        }, 220);
+    }
+
     // Update scores
     scoreElement.textContent = score;
     bestElement.textContent = best;
@@ -401,8 +350,8 @@ function updateCatCollection() {
        item.innerHTML = `
     ${
         number <= highest
-        ? `<img src="${cat.image}" class="cat-image">`
-        : `<span class="animal">❔</span>`
+        ? <img src="${cat.image}" class="cat-image">
+        : <span class="animal">❔</span>
     }
 
     <strong>${number}</strong>
@@ -612,32 +561,17 @@ if (gameOver || isAnimating) return;
         localStorage.setItem("catevol", best);
     }
 
-// Check for a win immediately
-checkWin();
+    // Add a new cat
 
-// Play movement or merge sound
-const hasMerge = animationPositions.some(
-    movement => movement.fromPositions.length > 1
-);
+    addTile();
 
-playSound(hasMerge ? "merge" : "move");
+    // Check game conditions
 
-// Wait for all movement and merge animations
-updateBoard(() => {
-
-    // Add the new cat after the animation
-    addTile(direction);
-
-    // Show the newly spawned cat
-    updateBoard();
-
-    // Only check Game Over after spawning
+    checkWin();
     checkGameOver();
 
-    if (!gameOver) {
-        playSound("spawn");
-    }
-});
+    updateBoard();
+}
 
 // =====================================
 // WIN CONDITION
@@ -648,7 +582,7 @@ function checkWin() {
     if (!won && board.flat().includes(WIN_TILE)) {
 
         won = true;
-        playSound("win");
+
         messageElement.textContent =
             "🏆 You discovered the Ultimate Feline! You win!";
     }
@@ -678,76 +612,14 @@ function checkGameOver() {
         }
     }
 
-gameOver = true;
+    gameOver = true;
 
-messageElement.textContent =
-    "Game over! Start a new game to try again.";
-
-playSound("gameover");
-
-alert("Game over!");
-
-// =====================================
-// SOUND EFFECTS
-// =====================================
-
-function playSound(type) {
-
-    if (!soundEnabled) return;
-
-    const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) return;
-
-    if (!audioContext) {
-        audioContext = new AudioContextClass();
-    }
-
-    if (audioContext.state === "suspended") {
-        audioContext.resume();
-    }
-
-    const sounds = {
-        move: [220],
-        merge: [330, 440, 550],
-        spawn: [660],
-        win: [440, 554, 659, 880],
-        gameover: [330, 247, 196]
-    };
-
-    const notes = sounds[type] || [];
-
-    notes.forEach((frequency, index) => {
-
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-
-        const startTime =
-            audioContext.currentTime + index * 0.09;
-
-        oscillator.type = "sine";
-        oscillator.frequency.value = frequency;
-
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.exponentialRampToValueAtTime(
-            0.12,
-            startTime + 0.02
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            startTime + 0.18
-        );
-
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
-
-        oscillator.start(startTime);
-        oscillator.stop(startTime + 0.2);
-    });
+    messageElement.textContent =
+        "Game over! Start a new game to try again.";
+    alert("Game over!");
 }
-    
+
+// =====================================
 // =====================================
 // KEYBOARD CONTROLS
 // =====================================
@@ -783,18 +655,6 @@ document.getElementById("new-game")
         }
     });
 
-    // Sound toggle
-
-document.getElementById("sound-toggle")
-    .addEventListener("click", function() {
-
-        soundEnabled = !soundEnabled;
-
-        this.textContent = soundEnabled
-            ? "🔊 Sound: On"
-            : "🔇 Sound: Off";
-    });
-
 // =====================================
 // INITIALIZE
 // =====================================
@@ -809,4 +669,4 @@ window.addEventListener("scroll", () => {
 
 window.addEventListener("focus", () => {
     console.log("WINDOW FOCUSED");
-});
+});)
