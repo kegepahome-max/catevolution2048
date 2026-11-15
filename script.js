@@ -1,3 +1,4 @@
+
 // =====================================
 // CAT EVOLUTION 2048
 // =====================================
@@ -272,7 +273,7 @@ const dy =
                 const dy = targetRect.top - ghostRect.top;
 
                 item.ghost.style.transform =
-                    translate(${dx}px, ${dy}px);
+                    `translate(${dx}px, ${dy}px)`;
             });
         });
 
@@ -350,8 +351,8 @@ function updateCatCollection() {
        item.innerHTML = `
     ${
         number <= highest
-        ? <img src="${cat.image}" class="cat-image">
-        : <span class="animal">❔</span>
+        ? `<img src="${cat.image}" class="cat-image">`
+        : `<span class="animal">❔</span>`
     }
 
     <strong>${number}</strong>
@@ -669,4 +670,4 @@ window.addEventListener("scroll", () => {
 
 window.addEventListener("focus", () => {
     console.log("WINDOW FOCUSED");
-});)
+});
