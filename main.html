@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🐱 Cat Evolution 2048</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🐱 Cat Evolution</h1>
+        <p>Merge cats and discover new species!</p>
+    </header>
+
+    <main class="game-container">
+
+        <section class="game-info">
+
+            <div class="score-box">
+                <span>Score</span>
+                <h2 id="score">0</h2>
+            </div>
+
+            <div class="score-box">
+                <span>Best</span>
+                <h2 id="best">0</h2>
+            </div>
+
+        </section>
+
+        <button id="new-game" type="button">New Game</button>
+        <p id="message">Combine matching cats to evolve!</p>
+
+        <section id="board" class="game-board">
+            <!-- Game tiles will appear here -->
+        </section>
+
+        <section class="instructions">
+            <h3>How to Play</h3>
+            <p>Use your arrow keys to move the cats.</p>
+            <p>Merge two identical cats to evolve!</p>
+            <p>Reach 8192 to discover the ultimate feline.</p>
+        </section>
+
+    </main>
+
+    <!-- NEW CAT COLLECTION TAB -->
+
+<div class="new-cat-collection">
+
+    <details>
+        <summary>
+            🐾 My Cat Collection
+            <span>▼</span>
+        </summary>
+
+        <div id="new-cat-list"></div>
+
+    </details>
+
+</div>
+
+    <footer>
+        <p>Cat Evolution 2048 © 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
