@@ -5,7 +5,9 @@
         boardSize: 4,
         spawnValues: [{ value: 2, chance: 0.9 }, { value: 4, chance: 0.1 }],
         targetValue: 8192,
-        animationDuration: 180
+        animationDuration: 180,
+        mergeAnimationDuration: { min: 100, max: 1000, default: 350 },
+        mergeAlpha: { min: 20, max: 100, default: 75 }
     };
 
     const boardElement = document.getElementById("board");
@@ -14,28 +16,53 @@
     const messageElement = document.getElementById("message");
     const newGameButton = document.getElementById("new-game");
     const collectionElement = document.getElementById("new-cat-list");
+    const mergeSpeedControl = document.getElementById("merge-speed");
+    const mergeSpeedValue = document.getElementById("merge-speed-value");
+    const mergeAlphaControl = document.getElementById("merge-alpha");
+    const mergeAlphaValue = document.getElementById("merge-alpha-value");
 
-    if (!boardElement || !scoreElement || !bestElement || !messageElement || !newGameButton) {
-        throw new Error("The game requires #board, #score, #best, #message, and #new-game elements.");
+    if (!boardElement || !scoreElement || !bestElement || !messageElement || !newGameButton
+        || !mergeSpeedControl || !mergeSpeedValue || !mergeAlphaControl || !mergeAlphaValue) {
+        throw new Error("The game requires its board, score, message, restart, and animation control elements.");
     }
 
     boardElement.style.gridTemplateColumns = `repeat(${CONFIG.boardSize}, minmax(0, 1fr))`;
 
     const STORAGE_KEYS = {
         best: "cat-evolution-2048-best",
-        discovered: "cat-evolution-2048-discovered"
+        discovered: "cat-evolution-2048-discovered",
+        mergeSpeed: "cat-evolution-2048-merge-speed",
+        mergeAlpha: "cat-evolution-2048-merge-alpha"
     };
 
     let nextTileId = 0;
     let score = 0;
     let best = readBestScore();
+    let mergeAnimationDuration = readSetting(
+        STORAGE_KEYS.mergeSpeed,
+        CONFIG.mergeAnimationDuration
+    );
+    let mergeAlpha = readSetting(STORAGE_KEYS.mergeAlpha, CONFIG.mergeAlpha);
     let hasWon = false;
     let discovered = readDiscoveredValues();
     let grid = createEmptyGrid();
     let touchStart = null;
 
     bestElement.textContent = String(best);
+    mergeSpeedControl.value = String(mergeAnimationDuration);
+    mergeAlphaControl.value = String(mergeAlpha);
+    updateAnimationSettings();
     newGameButton.addEventListener("click", startNewGame);
+    mergeSpeedControl.addEventListener("input", () => {
+        mergeAnimationDuration = Number(mergeSpeedControl.value);
+        localStorage.setItem(STORAGE_KEYS.mergeSpeed, String(mergeAnimationDuration));
+        updateAnimationSettings();
+    });
+    mergeAlphaControl.addEventListener("input", () => {
+        mergeAlpha = Number(mergeAlphaControl.value);
+        localStorage.setItem(STORAGE_KEYS.mergeAlpha, String(mergeAlpha));
+        updateAnimationSettings();
+    });
     document.addEventListener("keydown", handleKeydown);
 
     boardElement.addEventListener("pointerdown", (event) => {
@@ -70,6 +97,21 @@
     function readBestScore() {
         const saved = Number(localStorage.getItem(STORAGE_KEYS.best));
         return Number.isFinite(saved) && saved > 0 ? saved : 0;
+    }
+
+    function readSetting(key, setting) {
+        const saved = Number(localStorage.getItem(key));
+        if (!Number.isFinite(saved) || saved < setting.min || saved > setting.max) {
+            return setting.default;
+        }
+        return saved;
+    }
+
+    function updateAnimationSettings() {
+        mergeSpeedValue.value = `${mergeAnimationDuration} ms`;
+        mergeAlphaValue.value = `${mergeAlpha}%`;
+        boardElement.style.setProperty("--merge-animation-duration", `${mergeAnimationDuration}ms`);
+        boardElement.style.setProperty("--merge-alpha", String(mergeAlpha / 100));
     }
 
     function readDiscoveredValues() {

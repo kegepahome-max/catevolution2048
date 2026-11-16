@@ -6,15 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🐱 Cat Evolution 2048</title>
+<title>Cat Evolution 2048</title>
     
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body>
 
     <header>
-        <h1>🐱 Cat Evolution</h1>
+        <h1>Cat Evolutions</h1>
         <p>Merge cats and discover new species!</p>
     </header>
 
@@ -35,6 +35,24 @@
         </section>
 
         <button id="new-game" type="button">New Game</button>
+
+        <section class="animation-controls" aria-label="Merge animation settings">
+            <div class="animation-control">
+                <label for="merge-speed">
+                    Merge animation speed
+                    <output id="merge-speed-value" for="merge-speed">350 ms</output>
+                </label>
+                <input id="merge-speed" type="range" min="100" max="1000" step="50" value="350">
+            </div>
+            <div class="animation-control">
+                <label for="merge-alpha">
+                    Merge animation alpha
+                    <output id="merge-alpha-value" for="merge-alpha">75%</output>
+                </label>
+                <input id="merge-alpha" type="range" min="20" max="100" step="5" value="75">
+            </div>
+        </section>
+
         <p id="message">Combine matching cats to evolve!</p>
 
         <section id="board" class="game-board">
@@ -56,7 +74,7 @@
 
     <details>
         <summary>
-            🐾 My Cat Collection
+            My Cat Collection
             <span>▼</span>
         </summary>
 
@@ -67,10 +85,10 @@
 </div>
 
     <footer>
-        <p>Cat Evolution 2048 © 2026</p>
+        <p>Cat Evolution 2048 ©2026</p>
     </footer>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 
 </body>
 </html>
