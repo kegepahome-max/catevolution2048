@@ -151,6 +151,10 @@ function addTile() {
 // =====================================
 
 function updateBoard() {
+    // Remove any leftover merge ghosts from a previous (possibly interrupted)
+    // animation so stale clones can never pile up on the page.
+    document.querySelectorAll(".merge-ghost").forEach(ghost => ghost.remove());
+
     const oldTiles = Array.from(boardElement.children);
     const fragment = document.createDocumentFragment();
     const newTiles = [];
@@ -181,10 +185,11 @@ if (movement) {
     if (movement.fromPositions.length > 1) {
         tile.classList.add("merge-result");
     } else if (
-        movement.from.r !== r ||
-        movement.from.c !== c
+        oldTiles[0] &&
+        (movement.from.r !== r ||
+        movement.from.c !== c)
     ) {
-                     
+
 
 const cellRect = oldTiles[0].getBoundingClientRect();
 const boardStyle = getComputedStyle(boardElement);
@@ -277,33 +282,17 @@ const dy =
             });
         });
 
-       // Wait until both cats finish sliding together
+       // The evolved cat reveals itself through the CSS `.merge-result`
+       // animation, so it is always visible once rendered — its visibility
+       // never depends on this timer firing. Here we only clean up the
+       // sliding ghosts and release the movement lock.
 setTimeout(() => {
     if (token !== animationId) return;
 
-    // Remove the original cats
     mergeGhosts.forEach(item => item.ghost.remove());
 
-    // NOW reveal the evolved cat
-    const results = boardElement.querySelectorAll(".merge-result");
-
-    results.forEach(tile => {
-        tile.classList.remove("merge-result");
-        tile.classList.add("merging");
-    });
-
-    // Finish the pop animation
-    setTimeout(() => {
-        if (token !== animationId) return;
-
-        results.forEach(tile => {
-            tile.classList.remove("merging");
-        });
-
-        isAnimating = false;
-    }, 220);
-    
-}, 220);
+    isAnimating = false;
+}, 350);
 
     } else {
         // Release movement lock after normal sliding
@@ -311,7 +300,7 @@ setTimeout(() => {
             if (token !== animationId) return;
 
             isAnimating = false;
-        }, 220);
+        }, 350);
     }
 
     // Update scores
