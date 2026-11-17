@@ -331,6 +331,70 @@ button:active {
     }
 }
 
+/* A doomed cell that still holds a cat shakes and wears a warning badge */
+.tile.danger-occupied {
+    outline-color: #b10f22;
+    animation: dangerFlash 0.7s ease-in-out infinite, dangerShake 0.4s ease-in-out infinite;
+    z-index: 7;
+}
+
+.tile.danger-occupied::after {
+    content: "⚠";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    font-size: 20px;
+    line-height: 1;
+    text-shadow: 0 0 4px #fff, 0 0 4px #fff;
+}
+
+@keyframes dangerShake {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 1px); }
+    75% { transform: translate(2px, -1px); }
+}
+
+/* Countdown bar for the strike cycle (hidden unless the mode is active) */
+#chaos-timer {
+    display: none;
+    height: 10px;
+    margin: 0 0 14px;
+    background: #f1dbe3;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+#chaos-timer.is-active {
+    display: block;
+}
+
+/* Fill drains left-to-right; calm green during the interval, red while warning */
+#chaos-timer-fill {
+    height: 100%;
+    transform-origin: left;
+    background: #7ec97e;
+    border-radius: 6px;
+}
+
+#chaos-timer-fill.is-warning {
+    background: #e23b4e;
+}
+
+/* Explosion sprite shown where a cat is destroyed */
+.explosion {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    object-fit: contain;
+    animation: explode 600ms ease-out forwards;
+}
+
+@keyframes explode {
+    0% { transform: scale(0.3); opacity: 0; }
+    30% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1.7); opacity: 0; }
+}
+
 /* Hide the small number label when turned off in settings */
 
 .game-board.hide-numbers .value {

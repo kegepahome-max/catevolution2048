@@ -8,7 +8,7 @@
 
 <title>Cat Evolution 2048</title>
 
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 
 <body>
@@ -45,6 +45,11 @@
         <button id="new-game" type="button">New Game</button>
 
         <p id="message">Combine matching cats to evolve!</p>
+
+        <!-- Cat-astrophe countdown; shown only while the mode is active -->
+        <div id="chaos-timer" aria-hidden="true">
+            <div id="chaos-timer-fill"></div>
+        </div>
 
         <section id="board" class="game-board">
             <!-- Game tiles will appear here -->
@@ -146,7 +151,7 @@
         <p>Cat Evolution 2048 ©2026</p>
     </footer>
 
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
 
 </body>
 </html>

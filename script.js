@@ -306,6 +306,22 @@ class BoardRenderer {
         });
     }
 
+    // Show a brief explosion sprite where a cat was destroyed.
+    explode(rect) {
+        if (this.reduceMotion) return;
+        const blast = document.createElement("img");
+        blast.src = "Assets/Explosion.png";
+        blast.className = "explosion";
+        Object.assign(blast.style, {
+            left: `${rect.left}px`,
+            top: `${rect.top}px`,
+            width: `${rect.width}px`,
+            height: `${rect.height}px`
+        });
+        document.body.appendChild(blast);
+        blast.addEventListener("animationend", () => blast.remove(), { once: true });
+    }
+
     // Animate a single moved tile into its new cell per the chosen style.
     animateMove(element, start, current, dx, dy) {
         // Fade: the tile simply appears in its destination cell, no travel.
@@ -661,9 +677,12 @@ class CatEvolution {
         this.best = Store.number(STORAGE_KEYS.best, { min: 1, max: Infinity, default: 0 });
         this.hasWon = false;
 
-        // Cat-astrophe mode state: pending timers, the doomed cells, and total losses.
+        // Cat-astrophe mode state: pending timers, countdown bar, doomed cells, total losses.
         this.chaosTimer = null;
         this.chaosStrike = null;
+        this.timerAnim = null;
+        this.chaosTimerEl = document.getElementById("chaos-timer");
+        this.chaosFillEl = document.getElementById("chaos-timer-fill");
         this.markedCells = new Set();
         this.catsLost = Store.number(STORAGE_KEYS.catsLost, { min: 0, max: Infinity, default: 0 });
 
@@ -781,20 +800,34 @@ class CatEvolution {
     // (Re)start the strike cycle, or do nothing if the mode is off.
     startChaos() {
         this.stopChaos();
-        if (this.settings.values.chaosMode) {
-            this.chaosTimer = setTimeout(() => this.markDoomedCells(), CONFIG.chaos.interval);
-        }
+        if (!this.settings.values.chaosMode) return;
+        if (this.chaosTimerEl) this.chaosTimerEl.classList.add("is-active");
+        this.runTimerBar(CONFIG.chaos.interval, false);
+        this.chaosTimer = setTimeout(() => this.markDoomedCells(), CONFIG.chaos.interval);
     }
 
-    // Cancel any pending strike and clear the danger marks.
+    // Cancel any pending strike, hide the bar and clear the danger marks.
     stopChaos() {
         clearTimeout(this.chaosTimer);
         clearTimeout(this.chaosStrike);
+        if (this.timerAnim) { this.timerAnim.cancel(); this.timerAnim = null; }
+        if (this.chaosTimerEl) this.chaosTimerEl.classList.remove("is-active");
         this.markedCells = new Set();
-        [...this.boardElement.children].forEach((cell) => cell.classList.remove("danger"));
+        [...this.boardElement.children].forEach((cell) => cell.classList.remove("danger", "danger-occupied"));
     }
 
-    // Flag a random handful of cells, then schedule the strike.
+    // Drain the countdown bar over a phase; red while a strike is imminent.
+    runTimerBar(duration, warning) {
+        if (!this.chaosFillEl) return;
+        this.chaosFillEl.classList.toggle("is-warning", warning);
+        if (this.timerAnim) this.timerAnim.cancel();
+        this.timerAnim = this.chaosFillEl.animate(
+            [{ transform: "scaleX(1)" }, { transform: "scaleX(0)" }],
+            { duration, easing: "linear", fill: "forwards" }
+        );
+    }
+
+    // Flag a random handful of cells, run the warning phase, then schedule the strike.
     markDoomedCells() {
         const size = this.board.size;
         const total = size * size;
@@ -802,30 +835,39 @@ class CatEvolution {
 
         // Choose unique cell indices and store them as "row,col" keys.
         const chosen = new Set();
-        while (chosen.size < count) chosen.add(Math.floor(Math.random() * total * 1.5));
+        while (chosen.size < count) chosen.add(Math.floor(Math.random() * total));
         this.markedCells = new Set([...chosen].map((i) => `${Math.floor(i / size)},${i % size}`));
 
         this.applyMarks();
+        this.runTimerBar(CONFIG.chaos.warn, true);
         this.chaosStrike = setTimeout(() => this.resolveStrike(), CONFIG.chaos.warn);
     }
 
-    // Add the danger class to every currently-marked cell element.
+    // Mark doomed cells; a cell holding a cat gets the louder "occupied" treatment.
     applyMarks() {
         const size = this.board.size;
         const children = this.boardElement.children;
         this.markedCells.forEach((key) => {
             const [row, col] = key.split(",").map(Number);
             const cell = children[row * size + col];
-            if (cell) cell.classList.add("danger");
+            if (!cell) return;
+            cell.classList.add("danger");
+            if (cell.dataset.tileId) cell.classList.add("danger-occupied");
         });
     }
 
-    // Delete any cat sitting on a doomed cell, then continue the cycle.
+    // Delete any cat on a doomed cell (with an explosion), then continue the cycle.
     resolveStrike() {
+        const size = this.board.size;
+        const children = this.boardElement.children;
+        const blasts = [];
         let removed = 0;
+
         this.markedCells.forEach((key) => {
             const [row, col] = key.split(",").map(Number);
             if (this.board.grid[row][col]) {
+                const cell = children[row * size + col];
+                if (cell) blasts.push(cell.getBoundingClientRect());
                 this.board.grid[row][col] = null;
                 removed += 1;
             }
@@ -838,6 +880,7 @@ class CatEvolution {
             this.checkAchievements();
         }
         this.renderer.render(this.board.grid);
+        blasts.forEach((rect) => this.renderer.explode(rect));
         this.startChaos();
     }
 
