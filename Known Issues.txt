@@ -1,0 +1,5 @@
+TODO
+
+
+Size of tiles morph frequently, commonly rows near the edges.
+The future cell which a tile fills is absent during the sliding animation.
