@@ -24,7 +24,8 @@ const STORAGE_KEYS = {
     showNumbers: "cat-evolution-2048-show-numbers",
     boardSize: "cat-evolution-2048-board-size",
     fourChance: "cat-evolution-2048-four-chance",
-    slideStyle: "cat-evolution-2048-slide-style"
+    slideStyle: "cat-evolution-2048-slide-style",
+    achievements: "cat-evolution-2048-achievements"
 };
 
 /* =================================
@@ -407,6 +408,77 @@ class Collection {
 }
 
 /* =================================
+   ACHIEVEMENTS
+================================= */
+
+// Milestone goals unlocked by reaching a tile value on a given board size.
+class Achievements {
+    constructor(element) {
+        this.element = element;
+
+        // Each goal is a tile value, optionally pinned to one board size.
+        this.defs = [
+            { id: "first-256", name: "Growing Pains", desc: "Reach a 256 cat", value: 256, size: null },
+            { id: "classic-2048", name: "The Classic", desc: "Reach 2048 on a 4×4", value: 2048, size: 4 },
+            { id: "cramped-1024", name: "Cramped Quarters", desc: "Reach 1024 on a 3×3", value: 1024, size: 3 },
+            { id: "tight-2048", name: "No Room to Breathe", desc: "Reach 2048 on a 3×3", value: 2048, size: 3 },
+            { id: "wide-8192", name: "Ultimate Feline", desc: "Reach 8192 on a 5×5", value: 8192, size: 5 }
+        ];
+
+        // Restore previously-earned goal ids.
+        this.unlocked = new Set((Store.json(STORAGE_KEYS.achievements) || [])
+            .filter((id) => typeof id === "string"));
+        this.render();
+    }
+
+    // Unlock any goal met by the current board; save and redraw if changed.
+    check(maxValue, size) {
+        let changed = false;
+        for (const def of this.defs) {
+            if (this.unlocked.has(def.id)) continue;
+            if (maxValue >= def.value && (def.size === null || def.size === size)) {
+                this.unlocked.add(def.id);
+                changed = true;
+            }
+        }
+        if (changed) {
+            Store.set(STORAGE_KEYS.achievements, JSON.stringify([...this.unlocked]));
+            this.render();
+        }
+    }
+
+    // One badge per goal, dimmed and locked until earned.
+    render() {
+        if (!this.element) return;
+
+        const fragment = document.createDocumentFragment();
+        for (const def of this.defs) {
+            const earned = this.unlocked.has(def.id);
+            const badge = document.createElement("div");
+            badge.className = earned ? "achievement is-earned" : "achievement";
+
+            // Trophy for earned goals, padlock for the rest.
+            const icon = document.createElement("div");
+            icon.className = "achievement-icon";
+            icon.textContent = earned ? "🏆" : "🔒";
+
+            // Name and goal description.
+            const text = document.createElement("div");
+            text.className = "achievement-text";
+            const name = document.createElement("p");
+            name.textContent = def.name;
+            const desc = document.createElement("small");
+            desc.textContent = def.desc;
+            text.append(name, desc);
+
+            badge.append(icon, text);
+            fragment.appendChild(badge);
+        }
+        this.element.replaceChildren(fragment);
+    }
+}
+
+/* =================================
    SETTINGS PANEL
 ================================= */
 
@@ -552,6 +624,7 @@ class CatEvolution {
         this.messageElement = document.getElementById("message");
         this.newGameButton = document.getElementById("new-game");
         const collectionElement = document.getElementById("new-cat-list");
+        const achievementsElement = document.getElementById("achievement-list");
 
         if (!this.boardElement || !this.scoreElement || !this.bestElement
             || !this.messageElement || !this.newGameButton) {
@@ -564,6 +637,7 @@ class CatEvolution {
         this.board = new GameBoard(values.boardSize, values.fourChance);
         this.renderer = new BoardRenderer(this.boardElement);
         this.collection = new Collection(collectionElement, CONFIG.targetValue);
+        this.achievements = new Achievements(achievementsElement);
         this.tabs = new TabBar();
 
         this.best = Store.number(STORAGE_KEYS.best, { min: 1, max: Infinity, default: 0 });
@@ -654,7 +728,11 @@ class CatEvolution {
         this.collection.record(this.board.values());
         this.renderer.render(this.board.grid, mergedIds);
 
-        if (!this.hasWon && this.board.maxValue() >= CONFIG.targetValue) {
+        // Unlock any milestones reached on this board size.
+        const maxValue = this.board.maxValue();
+        this.achievements.check(maxValue, this.board.size);
+
+        if (!this.hasWon && maxValue >= CONFIG.targetValue) {
             this.hasWon = true;
             this.messageElement.textContent = `Amazing! You discovered ${CONFIG.targetValue}! Keep playing or start a new game.`;
         } else if (!this.board.hasMoves()) {

@@ -668,3 +668,60 @@ footer {
     color: #80616e;
 }
 
+/* =================================
+   ACHIEVEMENTS
+================================= */
+
+#achievement-list {
+    display: grid;
+    gap: 10px;
+    padding: 12px 0;
+}
+
+/* One badge row: icon beside its name and goal */
+.achievement {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff0f5;
+    border: 2px solid #f3d5e0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-align: left;
+    opacity: 0.55;
+    filter: grayscale(0.6);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+/* Earned badges turn full-colour with a soft golden glow */
+.achievement.is-earned {
+    opacity: 1;
+    filter: none;
+    border-color: #e7b84b;
+    background: linear-gradient(160deg, #fff7e0, #ffeef5);
+    box-shadow: 0 3px 10px rgba(231, 184, 75, 0.25);
+}
+
+.achievement:hover {
+    transform: translateY(-2px);
+}
+
+/* Trophy / padlock glyph */
+.achievement-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+/* Name and goal text */
+.achievement-text p {
+    margin: 0 0 2px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.achievement-text small {
+    color: #80616e;
+}
+
