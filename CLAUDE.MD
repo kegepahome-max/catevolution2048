@@ -4,4 +4,4 @@ Do NOT add comments for every fix/new addition.
 
 Do NOT fix bug unless you can reproduce it , state when a bug has no easy fix.
 
-try not to patch code by writing unecessary bloat, keep it as short as possible.
+try not to fix a bug by writing unecessary bloat, keep it as short as possible.

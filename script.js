@@ -8,7 +8,10 @@ const CONFIG = {
     mergeSpeed: { min: 100, max: 1000, default: 350 },
     mergeAlpha: { min: 20, max: 100, default: 75 },
     boardSize: { min: 3, max: 8, default: 4 },
-    fourChance: { min: 0, max: 100, default: 10 }
+    fourChance: { min: 0, max: 100, default: 10 },
+    // Allowed tile-movement styles and the default.
+    slideStyles: ["slide", "fill", "fade"],
+    defaultSlideStyle: "slide"
 };
 
 // localStorage keys, named to match the setting keys used throughout.
@@ -20,7 +23,8 @@ const STORAGE_KEYS = {
     boardColor: "cat-evolution-2048-board-color",
     showNumbers: "cat-evolution-2048-show-numbers",
     boardSize: "cat-evolution-2048-board-size",
-    fourChance: "cat-evolution-2048-four-chance"
+    fourChance: "cat-evolution-2048-four-chance",
+    slideStyle: "cat-evolution-2048-slide-style"
 };
 
 /* =================================
@@ -39,6 +43,12 @@ class Store {
     static color(key, fallback) {
         const value = localStorage.getItem(key);
         return /^#[0-9a-fA-F]{6}$/.test(value || "") ? value : fallback;
+    }
+
+    // One of a fixed set of string options, otherwise the fallback.
+    static option(key, allowed, fallback) {
+        const value = localStorage.getItem(key);
+        return allowed.includes(value) ? value : fallback;
     }
 
     // A boolean stored as "1"/"0"; absent falls back.
@@ -213,6 +223,12 @@ class BoardRenderer {
     constructor(element) {
         this.element = element;
         this.reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        this.slideStyle = CONFIG.defaultSlideStyle;
+    }
+
+    // Choose how moved tiles animate into their new cell.
+    setSlideStyle(style) {
+        this.slideStyle = CONFIG.slideStyles.includes(style) ? style : CONFIG.defaultSlideStyle;
     }
 
     // Match the CSS grid to the current board size.
@@ -281,11 +297,49 @@ class BoardRenderer {
             const dy = start.top - current.top;
             if (!dx && !dy) return;
 
+            this.animateMove(element, start, current, dx, dy);
+        });
+    }
+
+    // Animate a single moved tile into its new cell per the chosen style.
+    animateMove(element, start, current, dx, dy) {
+        // Fade: the tile simply appears in its destination cell, no travel.
+        if (this.slideStyle === "fade") {
             element.animate(
-                [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
+                [{ opacity: 0, transform: "scale(0.6)" }, { opacity: 1, transform: "scale(1)" }],
                 { duration: CONFIG.slideDuration, easing: "ease-out" }
             );
-        });
+            return;
+        }
+
+        // Fill: the real tile stays put in its destination cell while a floating
+        // clone slides in from the old position, so the target never looks empty.
+        if (this.slideStyle === "fill") {
+            const ghost = element.cloneNode(true);
+            Object.assign(ghost.style, {
+                position: "fixed",
+                left: `${start.left}px`,
+                top: `${start.top}px`,
+                width: `${start.width}px`,
+                height: `${start.height}px`,
+                margin: "0",
+                pointerEvents: "none",
+                zIndex: "9999",
+                transition: `transform ${CONFIG.slideDuration}ms ease-out`
+            });
+            document.body.appendChild(ghost);
+            requestAnimationFrame(() => {
+                ghost.style.transform = `translate(${current.left - start.left}px, ${current.top - start.top}px)`;
+            });
+            setTimeout(() => ghost.remove(), CONFIG.slideDuration);
+            return;
+        }
+
+        // Slide (default): translate the tile from its old position to the new one.
+        element.animate(
+            [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
+            { duration: CONFIG.slideDuration, easing: "ease-out" }
+        );
     }
 }
 
@@ -372,6 +426,8 @@ class SettingsPanel {
             spec("mergeAlpha", "merge-alpha", "number",
                 { out: "merge-alpha-value", bounds: CONFIG.mergeAlpha, fmt: (v) => `${v}%` }),
             spec("boardColor", "board-color", "color"),
+            spec("slideStyle", "slide-style", "select",
+                { options: CONFIG.slideStyles, default: CONFIG.defaultSlideStyle }),
             spec("showNumbers", "show-numbers", "bool"),
             spec("boardSize", "board-size", "number",
                 { out: "board-size-value", bounds: CONFIG.boardSize, fmt: (v) => `${v} × ${v}`, restart: true }),
@@ -404,6 +460,8 @@ class SettingsPanel {
                 this.values[spec.key] = Store.number(STORAGE_KEYS[spec.key], spec.bounds);
             } else if (spec.type === "color") {
                 this.values[spec.key] = Store.color(STORAGE_KEYS[spec.key], CONFIG.defaultBoardColor);
+            } else if (spec.type === "select") {
+                this.values[spec.key] = Store.option(STORAGE_KEYS[spec.key], spec.options, spec.default);
             } else {
                 this.values[spec.key] = Store.bool(STORAGE_KEYS[spec.key], true);
             }
@@ -423,8 +481,8 @@ class SettingsPanel {
     // Store a control's new value, persist it, and refresh its label.
     commit(spec) {
         const value = spec.type === "bool" ? spec.el.checked
-            : spec.type === "color" ? spec.el.value
-                : Number(spec.el.value);
+            : spec.type === "number" ? Number(spec.el.value)
+                : spec.el.value;
         this.values[spec.key] = value;
         Store.set(STORAGE_KEYS[spec.key], value);
         if (spec.outEl) spec.outEl.value = spec.fmt(value);
@@ -434,7 +492,8 @@ class SettingsPanel {
     // slider settles) while updating their label live during "input".
     bind() {
         for (const spec of this.specs) {
-            if (spec.type === "bool") {
+            // Checkboxes and dropdowns settle on a single "change" event.
+            if (spec.type === "bool" || spec.type === "select") {
                 spec.el.addEventListener("change", () => {
                     this.commit(spec);
                     this.onChange(spec.key, this.values[spec.key]);
@@ -513,6 +572,7 @@ class CatEvolution {
         // Apply all visual settings and current score up front.
         this.bestElement.textContent = String(this.best);
         this.renderer.setAnimation(values.mergeSpeed, values.mergeAlpha);
+        this.renderer.setSlideStyle(values.slideStyle);
         this.boardElement.style.background = values.boardColor;
         this.boardElement.classList.toggle("hide-numbers", !values.showNumbers);
 
@@ -556,6 +616,9 @@ class CatEvolution {
                 break;
             case "boardColor":
                 this.boardElement.style.background = value;
+                break;
+            case "slideStyle":
+                this.renderer.setSlideStyle(value);
                 break;
             case "showNumbers":
                 this.boardElement.classList.toggle("hide-numbers", !value);

@@ -8,7 +8,7 @@
 
 <title>Cat Evolution 2048</title>
 
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 
 <body>
@@ -93,6 +93,15 @@
                 <input id="board-color" type="color" value="#e8cbd3">
             </div>
 
+            <div class="setting-row">
+                <label for="slide-style">Tile movement style</label>
+                <select id="slide-style">
+                    <option value="slide">Slide across</option>
+                    <option value="fill">Fill destination</option>
+                    <option value="fade">Fade in</option>
+                </select>
+            </div>
+
             <div class="setting-row setting-inline">
                 <label for="show-numbers">Show tile numbers</label>
                 <input id="show-numbers" type="checkbox" checked>
@@ -128,7 +137,7 @@
         <p>Cat Evolution 2048 ©2026</p>
     </footer>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 
 </body>
 </html>
