@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Cat Evolution 2048</title>
-    
-    <link rel="stylesheet" href="style.css?v=3">
+
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -18,7 +18,15 @@
         <p>Merge cats and discover new species!</p>
     </header>
 
-    <main class="game-container">
+    <!-- Top tab navigation -->
+    <nav class="tab-bar" aria-label="Main sections">
+        <button type="button" class="tab-button is-active" data-tab="game">Game</button>
+        <button type="button" class="tab-button" data-tab="collection">Collection</button>
+        <button type="button" class="tab-button" data-tab="settings">Settings</button>
+    </nav>
+
+    <!-- GAME TAB -->
+    <main class="game-container tab-panel is-active" id="tab-game">
 
         <section class="game-info">
 
@@ -36,23 +44,6 @@
 
         <button id="new-game" type="button">New Game</button>
 
-        <section class="animation-controls" aria-label="Merge animation settings">
-            <div class="animation-control">
-                <label for="merge-speed">
-                    Merge animation speed
-                    <output id="merge-speed-value" for="merge-speed">350 ms</output>
-                </label>
-                <input id="merge-speed" type="range" min="10" max="1000" step="50" value="350">
-            </div>
-            <div class="animation-control">
-                <label for="merge-alpha">
-                    Merge animation alpha
-                    <output id="merge-alpha-value" for="merge-alpha">75%</output>
-                </label>
-                <input id="merge-alpha" type="range" min="0" max="100" step="5" value="75">
-            </div>
-        </section>
-
         <p id="message">Combine matching cats to evolve!</p>
 
         <section id="board" class="game-board">
@@ -68,27 +59,76 @@
 
     </main>
 
-    <!-- NEW CAT COLLECTION TAB -->
-
-<div class="new-cat-collection">
-
-    <details>
-        <summary>
-            My Cat Collection
-            <span>▼</span>
-        </summary>
-
+    <!-- COLLECTION TAB -->
+    <section class="tab-panel collection-panel" id="tab-collection">
+        <h2>My Cat Collection</h2>
         <div id="new-cat-list"></div>
+    </section>
 
-    </details>
+    <!-- SETTINGS TAB -->
+    <section class="tab-panel settings-panel" id="tab-settings">
 
-</div>
+        <!-- Visual customization -->
+        <fieldset class="settings-group">
+            <legend>Visual</legend>
+
+            <div class="setting-row">
+                <label for="merge-speed">
+                    Merge animation speed
+                    <output id="merge-speed-value" for="merge-speed">350 ms</output>
+                </label>
+                <input id="merge-speed" type="range" min="10" max="1000" step="50" value="350">
+            </div>
+
+            <div class="setting-row">
+                <label for="merge-alpha">
+                    Merge animation alpha
+                    <output id="merge-alpha-value" for="merge-alpha">75%</output>
+                </label>
+                <input id="merge-alpha" type="range" min="0" max="100" step="5" value="75">
+            </div>
+
+            <div class="setting-row">
+                <label for="board-color">Board colour</label>
+                <input id="board-color" type="color" value="#e8cbd3">
+            </div>
+
+            <div class="setting-row setting-inline">
+                <label for="show-numbers">Show tile numbers</label>
+                <input id="show-numbers" type="checkbox" checked>
+            </div>
+        </fieldset>
+
+        <!-- Gameplay customization -->
+        <fieldset class="settings-group">
+            <legend>Game</legend>
+
+            <div class="setting-row">
+                <label for="board-size">
+                    Board size
+                    <output id="board-size-value" for="board-size">4 × 4</output>
+                </label>
+                <input id="board-size" type="range" min="3" max="8" step="1" value="4">
+            </div>
+
+            <div class="setting-row">
+                <label for="four-chance">
+                    Chance of spawning a 4
+                    <output id="four-chance-value" for="four-chance">10%</output>
+                </label>
+                <input id="four-chance" type="range" min="0" max="100" step="5" value="10">
+            </div>
+
+            <p class="settings-note">Changing board size or spawn chance starts a new game.</p>
+        </fieldset>
+
+    </section>
 
     <footer>
         <p>Cat Evolution 2048 ©2026</p>
     </footer>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=5"></script>
 
 </body>
 </html>
