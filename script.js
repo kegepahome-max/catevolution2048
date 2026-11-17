@@ -11,7 +11,9 @@ const CONFIG = {
     fourChance: { min: 0, max: 100, default: 10 },
     // Allowed tile-movement styles and the default.
     slideStyles: ["slide", "fill", "fade"],
-    defaultSlideStyle: "slide"
+    defaultSlideStyle: "slide",
+    // Cat-astrophe mode timing: gap between strikes, warning window, max doomed cells.
+    chaos: { interval: 6000, warn: 2500, maxMarks: 3 }
 };
 
 // localStorage keys, named to match the setting keys used throughout.
@@ -25,7 +27,9 @@ const STORAGE_KEYS = {
     boardSize: "cat-evolution-2048-board-size",
     fourChance: "cat-evolution-2048-four-chance",
     slideStyle: "cat-evolution-2048-slide-style",
-    achievements: "cat-evolution-2048-achievements"
+    achievements: "cat-evolution-2048-achievements",
+    chaosMode: "cat-evolution-2048-chaos-mode",
+    catsLost: "cat-evolution-2048-cats-lost"
 };
 
 /* =================================
@@ -416,13 +420,26 @@ class Achievements {
     constructor(element) {
         this.element = element;
 
-        // Each goal is a tile value, optionally pinned to one board size.
+        // Each goal names itself and tests the current game state (ctx) for its condition.
         this.defs = [
-            { id: "first-256", name: "Growing Pains", desc: "Reach a 256 cat", value: 256, size: null },
-            { id: "classic-2048", name: "The Classic", desc: "Reach 2048 on a 4×4", value: 2048, size: 4 },
-            { id: "cramped-1024", name: "Cramped Quarters", desc: "Reach 1024 on a 3×3", value: 1024, size: 3 },
-            { id: "tight-2048", name: "No Room to Breathe", desc: "Reach 2048 on a 3×3", value: 2048, size: 3 },
-            { id: "wide-8192", name: "Ultimate Feline", desc: "Reach 8192 on a 5×5", value: 8192, size: 5 }
+            { id: "first-256", name: "Growing Pains", desc: "Reach a 256 cat",
+                test: (c) => c.maxValue >= 256 },
+            { id: "classic-2048", name: "The Classic", desc: "Reach 2048 on a 4×4",
+                test: (c) => c.maxValue >= 2048 && c.size === 4 },
+            { id: "cramped-1024", name: "Cramped Quarters", desc: "Reach 1024 on a 3×3",
+                test: (c) => c.maxValue >= 1024 && c.size === 3 },
+            { id: "tight-2048", name: "No Room to Breathe", desc: "Reach 2048 on a 3×3",
+                test: (c) => c.maxValue >= 2048 && c.size === 3 },
+            { id: "wide-8192", name: "Ultimate Feline", desc: "Reach 8192 on a 5×5",
+                test: (c) => c.maxValue >= 8192 && c.size === 5 },
+            { id: "math-limit", name: "The Mathematical Limit", desc: "Reach 8192 on a 4×4",
+                test: (c) => c.maxValue >= 8192 && c.size === 4 },
+            { id: "chaos-512", name: "Living Dangerously", desc: "Reach 512 in Cat-astrophe mode",
+                test: (c) => c.chaos && c.maxValue >= 512 },
+            { id: "chaos-2048", name: "Eye of the Storm", desc: "Reach 2048 in Cat-astrophe mode",
+                test: (c) => c.chaos && c.maxValue >= 2048 },
+            { id: "nine-lives", name: "Nine Lives", desc: "Lose 9 cats to Cat-astrophe",
+                test: (c) => c.catsLost >= 9 }
         ];
 
         // Restore previously-earned goal ids.
@@ -431,12 +448,12 @@ class Achievements {
         this.render();
     }
 
-    // Unlock any goal met by the current board; save and redraw if changed.
-    check(maxValue, size) {
+    // Unlock any goal whose condition the current state meets; save and redraw if changed.
+    check(ctx) {
         let changed = false;
         for (const def of this.defs) {
             if (this.unlocked.has(def.id)) continue;
-            if (maxValue >= def.value && (def.size === null || def.size === size)) {
+            if (def.test(ctx)) {
                 this.unlocked.add(def.id);
                 changed = true;
             }
@@ -501,6 +518,7 @@ class SettingsPanel {
             spec("slideStyle", "slide-style", "select",
                 { options: CONFIG.slideStyles, default: CONFIG.defaultSlideStyle }),
             spec("showNumbers", "show-numbers", "bool"),
+            spec("chaosMode", "chaos-mode", "bool", { default: false }),
             spec("boardSize", "board-size", "number",
                 { out: "board-size-value", bounds: CONFIG.boardSize, fmt: (v) => `${v} × ${v}`, restart: true }),
             spec("fourChance", "four-chance", "number",
@@ -535,7 +553,7 @@ class SettingsPanel {
             } else if (spec.type === "select") {
                 this.values[spec.key] = Store.option(STORAGE_KEYS[spec.key], spec.options, spec.default);
             } else {
-                this.values[spec.key] = Store.bool(STORAGE_KEYS[spec.key], true);
+                this.values[spec.key] = Store.bool(STORAGE_KEYS[spec.key], spec.default ?? true);
             }
         }
     }
@@ -643,6 +661,12 @@ class CatEvolution {
         this.best = Store.number(STORAGE_KEYS.best, { min: 1, max: Infinity, default: 0 });
         this.hasWon = false;
 
+        // Cat-astrophe mode state: pending timers, the doomed cells, and total losses.
+        this.chaosTimer = null;
+        this.chaosStrike = null;
+        this.markedCells = new Set();
+        this.catsLost = Store.number(STORAGE_KEYS.catsLost, { min: 0, max: Infinity, default: 0 });
+
         // Apply all visual settings and current score up front.
         this.bestElement.textContent = String(this.best);
         this.renderer.setAnimation(values.mergeSpeed, values.mergeAlpha);
@@ -697,6 +721,9 @@ class CatEvolution {
             case "showNumbers":
                 this.boardElement.classList.toggle("hide-numbers", !value);
                 break;
+            case "chaosMode":
+                if (value) this.startChaos(); else this.stopChaos();
+                break;
             case "boardSize":
                 this.board.size = value;
                 this.startNewGame();
@@ -717,6 +744,7 @@ class CatEvolution {
         this.collection.record(this.board.values());
         this.updateScore();
         this.renderer.render(this.board.grid);
+        this.startChaos();
     }
 
     // Perform a move, then redraw and update status.
@@ -727,17 +755,90 @@ class CatEvolution {
         this.updateScore();
         this.collection.record(this.board.values());
         this.renderer.render(this.board.grid, mergedIds);
+        this.applyMarks();
+        this.checkAchievements();
 
-        // Unlock any milestones reached on this board size.
-        const maxValue = this.board.maxValue();
-        this.achievements.check(maxValue, this.board.size);
-
-        if (!this.hasWon && maxValue >= CONFIG.targetValue) {
+        if (!this.hasWon && this.board.maxValue() >= CONFIG.targetValue) {
             this.hasWon = true;
             this.messageElement.textContent = `Amazing! You discovered ${CONFIG.targetValue}! Keep playing or start a new game.`;
         } else if (!this.board.hasMoves()) {
             this.messageElement.textContent = "No more moves. Start a new game to play again!";
         }
+    }
+
+    // Evaluate achievements against the current board and Cat-astrophe stats.
+    checkAchievements() {
+        this.achievements.check({
+            maxValue: this.board.maxValue(),
+            size: this.board.size,
+            chaos: this.settings.values.chaosMode,
+            catsLost: this.catsLost
+        });
+    }
+
+    /* ---- Cat-astrophe mode ---- */
+
+    // (Re)start the strike cycle, or do nothing if the mode is off.
+    startChaos() {
+        this.stopChaos();
+        if (this.settings.values.chaosMode) {
+            this.chaosTimer = setTimeout(() => this.markDoomedCells(), CONFIG.chaos.interval);
+        }
+    }
+
+    // Cancel any pending strike and clear the danger marks.
+    stopChaos() {
+        clearTimeout(this.chaosTimer);
+        clearTimeout(this.chaosStrike);
+        this.markedCells = new Set();
+        [...this.boardElement.children].forEach((cell) => cell.classList.remove("danger"));
+    }
+
+    // Flag a random handful of cells, then schedule the strike.
+    markDoomedCells() {
+        const size = this.board.size;
+        const total = size * size;
+        const count = Math.min(total, 1 + Math.floor(Math.random() * CONFIG.chaos.maxMarks));
+
+        // Choose unique cell indices and store them as "row,col" keys.
+        const chosen = new Set();
+        while (chosen.size < count) chosen.add(Math.floor(Math.random() * total * 1.5));
+        this.markedCells = new Set([...chosen].map((i) => `${Math.floor(i / size)},${i % size}`));
+
+        this.applyMarks();
+        this.chaosStrike = setTimeout(() => this.resolveStrike(), CONFIG.chaos.warn);
+    }
+
+    // Add the danger class to every currently-marked cell element.
+    applyMarks() {
+        const size = this.board.size;
+        const children = this.boardElement.children;
+        this.markedCells.forEach((key) => {
+            const [row, col] = key.split(",").map(Number);
+            const cell = children[row * size + col];
+            if (cell) cell.classList.add("danger");
+        });
+    }
+
+    // Delete any cat sitting on a doomed cell, then continue the cycle.
+    resolveStrike() {
+        let removed = 0;
+        this.markedCells.forEach((key) => {
+            const [row, col] = key.split(",").map(Number);
+            if (this.board.grid[row][col]) {
+                this.board.grid[row][col] = null;
+                removed += 1;
+            }
+        });
+        this.markedCells = new Set();
+
+        if (removed) {
+            this.catsLost += removed;
+            Store.set(STORAGE_KEYS.catsLost, this.catsLost);
+            this.checkAchievements();
+        }
+        this.renderer.render(this.board.grid);
+        this.startChaos();
     }
 
     // Reflect the score and persist a new best.

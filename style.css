@@ -314,6 +314,23 @@ button:active {
     background: #f5e1e7;
 }
 
+/* Cat-astrophe mode: a doomed cell flashes red until the strike lands */
+.tile.danger {
+    outline: 3px solid #e23b4e;
+    outline-offset: -3px;
+    animation: dangerFlash 0.7s ease-in-out infinite;
+}
+
+@keyframes dangerFlash {
+    0%, 100% {
+        box-shadow: inset 0 0 0 999px rgba(226, 59, 78, 0.15);
+    }
+
+    50% {
+        box-shadow: inset 0 0 0 999px rgba(226, 59, 78, 0.5);
+    }
+}
+
 /* Hide the small number label when turned off in settings */
 
 .game-board.hide-numbers .value {
