@@ -66,6 +66,26 @@ header p {
     color: white;
 }
 
+/* Settings tab gently pulses to invite customization */
+.tab-button[data-tab="settings"] {
+    animation: settingsGlow 2.4s ease-in-out infinite;
+}
+
+/* Pause the glow while the settings tab is the active one */
+.tab-button[data-tab="settings"].is-active {
+    animation: none;
+}
+
+@keyframes settingsGlow {
+    0%, 100% {
+        box-shadow: 0 0 4px rgba(217, 120, 153, 0.35);
+    }
+
+    50% {
+        box-shadow: 0 0 16px 2px rgba(217, 120, 153, 0.75);
+    }
+}
+
 /* Only the active tab panel is shown */
 
 .tab-panel {
@@ -590,10 +610,23 @@ footer {
 /* Individual cat cards */
 
 .new-cat-card {
-    background: white;
-    padding: 8px;
-    border-radius: 10px;
+    background: linear-gradient(160deg, #ffffff, #fff0f5);
+    padding: 12px 8px;
+    border: 2px solid #f3d5e0;
+    border-radius: 14px;
     text-align: center;
+    box-shadow: 0 3px 8px rgba(120, 65, 85, 0.08);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        border-color 0.2s;
+}
+
+/* Lift and highlight a card on hover */
+.new-cat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(120, 65, 85, 0.18);
+    border-color: #e9b8c7;
 }
 
 /* Cat images */
@@ -605,6 +638,12 @@ footer {
     object-fit: contain;
 }
 
+/* Discovered cats sit on a soft rounded spotlight */
+.new-cat-card img {
+    background: radial-gradient(circle at 50% 45%, #ffe5ed 0%, transparent 70%);
+    border-radius: 50%;
+}
+
 /* Ultimate Feline question mark */
 
 .mystery-cat {
@@ -612,6 +651,9 @@ footer {
     justify-content: center;
     align-items: center;
     font-size: 45px;
+    color: #c98aa3;
+    background: repeating-linear-gradient(45deg, #fbe7ee, #fbe7ee 6px, #f7dbe5 6px, #f7dbe5 12px);
+    border-radius: 12px;
 }
 
 /* Cat names and numbers */
