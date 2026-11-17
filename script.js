@@ -865,9 +865,12 @@ class CatEvolution {
 
         this.markedCells.forEach((key) => {
             const [row, col] = key.split(",").map(Number);
-            if (this.board.grid[row][col]) {
+            const tile = this.board.grid[row][col];
+            if (tile) {
                 const cell = children[row * size + col];
                 if (cell) blasts.push(cell.getBoundingClientRect());
+                // A destroyed cat costs its own value in score (never below zero).
+                this.board.score = Math.max(0, this.board.score - tile.value);
                 this.board.grid[row][col] = null;
                 removed += 1;
             }
@@ -877,10 +880,18 @@ class CatEvolution {
         if (removed) {
             this.catsLost += removed;
             Store.set(STORAGE_KEYS.catsLost, this.catsLost);
+            this.updateScore();
             this.checkAchievements();
         }
         this.renderer.render(this.board.grid);
         blasts.forEach((rect) => this.renderer.explode(rect));
+
+        // Losing every cat to Cat-astrophe ends the game.
+        if (removed && this.board.values().length === 0) {
+            this.stopChaos();
+            this.messageElement.textContent = "Cat-astrophe! Every cat was wiped out. Start a new game!";
+            return;
+        }
         this.startChaos();
     }
 
