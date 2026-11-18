@@ -870,7 +870,7 @@ class CatEvolution {
                 const cell = children[row * size + col];
                 if (cell) blasts.push(cell.getBoundingClientRect());
                 // A destroyed cat costs its own value in score (never below zero).
-                this.board.score = Math.max(0, this.board.score - tile.value);
+                this.board.score = Math.max(0, this.board.score - tile.value*2);
                 this.board.grid[row][col] = null;
                 removed += 1;
             }
